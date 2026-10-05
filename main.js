@@ -249,10 +249,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // 3. EVERY SECTION SCROLL-DRIVEN SEQUENCE:
-      // "the animation of the font should come then the photo should come up visible. Everything should work like that not like this."
-
       // For every section:
-      const sections = ['#works', '#services', '#about', '#experience', '#contact'];
+      const sections = ['#works', '#services', '#skills', '#about', '#experience', '#education', '#contact'];
 
       sections.forEach((secId) => {
         const section = document.querySelector(secId);
@@ -420,115 +418,115 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
-     PROJECT DATA & DEEP DIVE MODAL
+     PROJECT DATA & DEEP DIVE MODAL (AUTHENTIC RESUME DATA)
      ========================================================================== */
   const projectsData = {
-    syncflow: {
-      title: 'Syncflow AI Orchestrator',
-      tagline: 'Enterprise Cloud Infrastructure Control Plane & Distributed Clusters',
-      img: 'assets/proj_cloudflow.jpg',
-      specs: [
-        { label: 'Role', val: 'Principal Architect & Full-Stack Lead' },
-        { label: 'Tech Stack', val: 'Next.js 15, Go, Kubernetes, Kafka, Tailwind' },
-        { label: 'Throughput', val: '789.6 TB Processed / mo' },
-        { label: 'Availability', val: '99.98% Monitored Uptime' }
-      ],
-      desc: 'Syncflow AI unifies complex hybrid-cloud architectures into an intuitive, zero-latency dashboard. By leveraging event-driven microservices written in Go and an asynchronous WebSocket stream, telemetry from over 340 active microservices is aggregated and analyzed in real-time. Automated cluster healing routines reduce manual engineering intervention by over 60%.',
-      features: [
-        'Automated real-time anomaly detection with statistical drift alerting.',
-        'High-density time-series data visualization rendered on HTML5 Canvas at 60 FPS.',
-        'Zero-downtime rolling canary deployments orchestrated directly from the web interface.',
-        'Multi-tenant RBAC security model with end-to-end cryptographic audit logging.'
-      ]
-    },
-    lumina: {
-      title: 'Lumina AI 3D Studio',
-      tagline: 'Procedural Generative 3D Mesh Synthesis & WebGL Workspace',
+    interior: {
+      title: '3D Virtual Interior Design Web Simulator',
+      tagline: 'Responsive Web Layout & Spatial Dimensioning Simulator',
       img: 'assets/proj_neuroart.jpg',
       specs: [
-        { label: 'Role', val: 'Frontend & WebGL Systems Engineer' },
-        { label: 'Tech Stack', val: 'Three.js, GLSL, React 19, Python FastAPI, PyTorch' },
-        { label: 'Render Latency', val: '< 16ms Interactive Frame Time' },
-        { label: 'Polygons', val: 'Up to 250k dynamic polygons' }
+        { label: 'Role', val: 'Web Developer & Project Creator' },
+        { label: 'Tech Stack', val: 'HTML5, CSS3, JavaScript ES6, Canvas 2D' },
+        { label: 'Responsive', val: '100% Mobile & Desktop Fluid Grid' },
+        { label: 'Category', val: 'Academic Capstone Project' }
       ],
-      desc: 'Lumina AI connects text and image prompts directly to three-dimensional procedural geometry in real-time. Utilizing custom GLSL shaders and optimized WebGL draw-call batching, users can manipulate crystalline forms, lighting presets, and export clean production-ready OBJ/GLTF assets straight to their digital pipelines.',
+      desc: 'Built a responsive website using HTML, CSS, and JavaScript to simulate dynamic interior room layouts. Users can manipulate room dimensions, place virtual furniture models, calculate spatial clearances, and experiment with room aesthetics in an interactive, fluid browser experience.',
       features: [
-        'Hardware-accelerated PBR (Physically Based Rendering) viewport inside standard modern browsers.',
-        'Dynamic parameter sliders (detail, complexity, roughness) updating GPU buffers synchronously.',
-        'Client-side procedural geometry caching with IndexedDB integration.',
-        'Multi-angle turntable exporter with photorealistic ambient occlusion passes.'
+        'Responsive layout simulation adapting seamlessly across mobile, tablet, and high-resolution desktop viewports.',
+        'Interactive drag-and-drop room dimension planning powered by CSS Grid and native JavaScript.',
+        'Dynamic styling controls allowing real-time material, texture, and furniture swaps.',
+        'Lightweight vanilla code footprint optimized for instantaneous browser loading with zero framework bloat.'
       ]
     },
-    pulsepay: {
-      title: 'PulsePay Core Engine',
-      tagline: 'High-Velocity Multi-Currency Settlement & Ledger Architecture',
-      img: 'assets/proj_pulsepay.jpg',
-      specs: [
-        { label: 'Role', val: 'Backend & Distributed Systems Architect' },
-        { label: 'Tech Stack', val: 'TypeScript, Node.js, Redis, PostgreSQL, Docker' },
-        { label: 'Volume', val: '$42.8M Daily Transaction Ledger' },
-        { label: 'Latency', val: '1.2ms Internal Settlement Speed' }
-      ],
-      desc: 'PulsePay addresses the demanding throughput requirements of global cross-border payments. Engineered with idempotent API endpoints, distributed Redis mutexes, and write-ahead transaction ledgers, the platform ensures complete consistency even amidst network partitions.',
-      features: [
-        'Distributed lock manager preventing race conditions during simultaneous payment settlement.',
-        'Real-time fraud telemetry calculating risk scores within 5ms of payload ingestion.',
-        'Automated reconciliation engine validating bank clearing files across 14 currencies.',
-        'Cryptographic webhooks with exponential backoff and replay attack protection.'
-      ]
-    },
-    devorbit: {
-      title: 'DevOrbit Collaborative IDE',
-      tagline: 'Ephemeral In-Browser Development Environments with CRDTs',
-      img: 'assets/proj_devorbit.jpg',
-      specs: [
-        { label: 'Role', val: 'Full-Stack & WebAssembly Engineer' },
-        { label: 'Tech Stack', val: 'WebSockets, Yjs CRDTs, Rust, WebAssembly, React' },
-        { label: 'Sync Delay', val: '< 25ms Peer-to-Peer Latency' },
-        { label: 'Concurrency', val: '50+ Active Peers per Workspace' }
-      ],
-      desc: 'DevOrbit provides instant, zero-install developer sandboxes directly in Google Chrome and modern browsers. By embedding WebAssembly runtime modules and CRDT conflict-free replication trees, teams can co-code, run unit tests, and terminal sessions without stepping on each other’s keystrokes.',
-      features: [
-        'Conflict-free multi-cursor synchronization with visual presence badges.',
-        'Sandboxed WebAssembly compiler executing TypeScript and Rust in-browser.',
-        'Low-overhead WebRTC audio conferencing embedded alongside editor buffers.',
-        'One-click GitHub branch checkout and container snapshot persistence.'
-      ]
-    },
-    aurabiotrack: {
-      title: 'Aura BioTrack Telemetry',
-      tagline: 'High-Frequency Wearable Sensor Ingestion & Health Analytics',
+    ivf: {
+      title: 'IVF Healthcare Counseling & Patient Intake',
+      tagline: 'Empathetic Healthcare Counseling & Confidential Records Operations',
       img: 'assets/proj_aurabiotrack.jpg',
       specs: [
-        { label: 'Role', val: 'Lead Full-Stack Developer' },
-        { label: 'Tech Stack', val: 'Next.js, TimescaleDB, Canvas API, GraphQL, Python' },
-        { label: 'Data Points', val: '12M+ Sensor Records Ingested / day' },
-        { label: 'Accuracy', val: '99.4% Physiological Trend Model' }
+        { label: 'Clinic', val: 'IVF Access, Rajajinagar, Bengaluru' },
+        { label: 'Tenure', val: '2026 — Present' },
+        { label: 'Focus', val: 'Patient Needs Counseling & Coordination' },
+        { label: 'Integrity', val: '100% Strict Medical Record Confidentiality' }
       ],
-      desc: 'Aura BioTrack synchronizes biometric sensor feeds (heart rate variability, sleep stages, recovery metrics) into actionable personal wellness dashboards. Designed with TimescaleDB continuous aggregates to make querying months of continuous biometric time-series instant.',
+      desc: 'Direct client counseling and healthcare operational coordination at IVF Access, Rajajinagar. Guiding prospective and ongoing clients through specialized clinical care pathways, explaining clinical protocols with deep empathy, and managing comprehensive medical intake registrations.',
       features: [
-        'Interactive smooth bezier canvas graphs with scrubbable temporal crosshairs.',
-        'Automated anomaly detection flagging sleep irregularities and recovery dips.',
-        'Offline-first progressive web app (PWA) with background sync capabilities.',
-        'HIPAA-compliant encrypted data storage with patient-controlled key sharing.'
+        'Counsel clients and evaluate unique care requirements with compassion, active listening, and clarity.',
+        'Coordinate patient registrations, ongoing follow-ups, and proactive communication cycles.',
+        'Maintain absolute confidentiality and meticulous record-keeping across clinical documentation.',
+        'Collaborate closely with doctors, nurses, and administrative teams for seamless healthcare service delivery.'
       ]
     },
-    hypersonic: {
-      title: 'HyperSonic UI Framework',
-      tagline: 'Ultra-Lightweight 60FPS Component System & Token Architecture',
-      img: 'assets/proj_neuroart.jpg',
+    analytics: {
+      title: 'Business Analytics & Power BI Suite',
+      tagline: 'Interactive Data Modeling, Trend Analysis & KPI Telemetry',
+      img: 'assets/proj_cloudflow.jpg',
       specs: [
-        { label: 'Role', val: 'UI/UX & Design Systems Creator' },
-        { label: 'Tech Stack', val: 'Vanilla JS, CSS Houdini, Web Components, Rollup' },
-        { label: 'Bundle Size', val: '< 9.2 KB Gzipped (Zero Dependencies)' },
-        { label: 'A11y Score', val: '100% WCAG AAA Compliant' }
+        { label: 'Organization', val: 'Certisured Internship (2025)' },
+        { label: 'Tools', val: 'Power BI, Advanced Excel, Pivot Tables, SQL' },
+        { label: 'Scope', val: 'Business Intelligence & Performance Analytics' },
+        { label: 'Output', val: 'Executive Reporting Dashboards' }
       ],
-      desc: 'HyperSonic was developed to break free from heavy JavaScript component bloat. Built entirely upon native Web Components and modern CSS custom properties, it guarantees silky 60FPS fluid physics, keyboard accessibility, and effortless skinning.',
+      desc: 'Completed an intensive Business Analytics Internship at Certisured, engineering interactive Power BI dashboards and advanced Excel models. Transformed complex multi-variate business datasets into clear executive reports with actionable statistical insights.',
       features: [
-        'Hardware-accelerated micro-animations utilizing CSS Houdini Paint API.',
-        'Complete semantic accessibility with ARIA attributes baked in by default.',
-        'Native light/dark/custom theme tokens switchable in a single CSS cascade.',
-        'Zero framework lock-in: compatible with React, Vue, Svelte, or Vanilla HTML.'
+        'Advanced Microsoft Excel modeling featuring nested formulas, pivot tables, and dynamic charting.',
+        'Interactive Power BI dashboards enabling multi-dimensional slicing and drill-down KPI exploration.',
+        'Automated analytical data cleaning, filtering, and trend variance calculations.',
+        'Executive presentation layouts designed to guide strategic data-backed operational decisions.'
+      ]
+    },
+    tally: {
+      title: 'Tally ERP Billing & Clinic Administration',
+      tagline: 'Healthcare Financial Ledgers, Invoicing & Operational Workflows',
+      img: 'assets/proj_pulsepay.jpg',
+      specs: [
+        { label: 'Organization', val: 'IVF Access, Rajajinagar, Bengaluru' },
+        { label: 'Period', val: '2025 — 2026' },
+        { label: 'System', val: 'Tally ERP & Microsoft Excel' },
+        { label: 'Role', val: 'Accountant & Administration Executive' }
+      ],
+      desc: 'Managed end-to-end accounting operations, billing verification, and routine administration at IVF Access Rajajinagar. Maintained pristine financial ledgers, processed patient service invoices, and streamlined routine clinic office operations.',
+      features: [
+        'Managed daily billing, invoice generation, receipts, and multi-mode payment reconciliations.',
+        'Maintained structured spreadsheets and business records in Excel and Tally ERP.',
+        'Conducted routine audit trail checks ensuring zero discrepancy in clinic operational expenses.',
+        'Coordinated administrative tasks, vendor communications, and routine office logistics.'
+      ]
+    },
+    java: {
+      title: 'Core Java & Relational Database System',
+      tagline: 'Certified Object-Oriented Software Architecture & SQL Database Querying',
+      img: 'assets/proj_devorbit.jpg',
+      specs: [
+        { label: 'Certification', val: 'Anudip Foundation' },
+        { label: 'Language', val: 'Core Java (OOP, Collections, JDBC)' },
+        { label: 'Database', val: 'Relational SQL & Schema Architecture' },
+        { label: 'Stack', val: 'Java, SQL, HTML5, CSS3, JavaScript' }
+      ],
+      desc: 'Certified by Anudip Foundation in Java Core and Web Development. Engineered structured Java applications employing Object-Oriented Programming (OOP) paradigms, JDBC relational database connections, and optimized SQL data schemas.',
+      features: [
+        'Robust OOP class hierarchy modeling entities, encapsulation, and modular design.',
+        'Relational SQL database tables with primary/foreign keys, joins, and indexing.',
+        'Secure database connectivity handling automated record insertion, updates, and lookups.',
+        'Integration with web frontends utilizing HTML5, CSS3, and JavaScript.'
+      ]
+    },
+    uiux: {
+      title: 'UI/UX & Executive Visual Presentation Suite',
+      tagline: 'Visual Dashboard Layouts, Client Journeys & Interface Wireframing',
+      img: 'assets/proj_hypersonic.jpg',
+      specs: [
+        { label: 'Tools', val: 'Figma, Canva, Microsoft PowerPoint' },
+        { label: 'Domain', val: 'Healthcare Dashboard & Information Design' },
+        { label: 'Focus', val: 'Accessibility, Readability & Brand Harmony' },
+        { label: 'Asset Types', val: 'Wireframes, Prototypes & Deck Templates' }
+      ],
+      desc: 'Designed clean, human-centered user interface layouts and executive presentation decks using Figma and Canva. Built specialized patient journey maps, clinic performance summaries, and high-impact visual assets.',
+      features: [
+        'Modern UI dashboard wireframes tailored for healthcare and administrative data monitoring.',
+        'Cohesive color palettes with royal accents, clean typography hierarchy, and intuitive navigation.',
+        'Comprehensive PowerPoint and Canva slide decks for stakeholder presentations.',
+        'User journey flows mapping client intake touchpoints and follow-up milestones.'
       ]
     }
   };
@@ -765,22 +763,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cmd === 'help') {
           responseLine.innerHTML = `
             Available Commands:<br>
-            • <span style="color:#A5B4FC;">skills</span> — inspect technical capabilities<br>
-            • <span style="color:#A5B4FC;">works</span> — list production projects<br>
-            • <span style="color:#A5B4FC;">hire</span> — get in touch / hire Raksha<br>
-            • <span style="color:#A5B4FC;">whoami</span> — developer profile manifesto<br>
+            • <span style="color:#A5B4FC;">skills</span> — inspect skills &amp; competencies<br>
+            • <span style="color:#A5B4FC;">works</span> — list production projects &amp; capstone<br>
+            • <span style="color:#A5B4FC;">education</span> — academic credentials (BCA CGPA: 8.65)<br>
+            • <span style="color:#A5B4FC;">experience</span> — professional experience at IVF Access<br>
+            • <span style="color:#A5B4FC;">hire</span> — connect with Raksha directly<br>
+            • <span style="color:#A5B4FC;">whoami</span> — professional profile &amp; summary<br>
+            • <span style="color:#A5B4FC;">languages</span> — spoken languages<br>
+            • <span style="color:#A5B4FC;">drone</span> — VLOS drone training details<br>
             • <span style="color:#A5B4FC;">clear</span> — clear terminal buffer<br>
             • <span style="color:#A5B4FC;">matrix</span> — initiate neural glitch
           `;
         } else if (cmd === 'skills') {
-          responseLine.innerHTML = `Stack: [Next.js 15, React 19, TypeScript, Go, WebGL/Three.js, Kubernetes, PostgreSQL, Redis]`;
+          responseLine.innerHTML = `Skills: [Data Analysis &amp; Reporting (Power BI, Advanced Excel), Documentation (Word, PPT, Outlook), Business Systems (Tally ERP, CRM), Programming (Core Java, SQL, HTML, CSS, JS), Design (Figma, Canva)]`;
         } else if (cmd === 'works' || cmd === 'projects') {
-          responseLine.innerHTML = `Projects: Syncflow AI, Lumina AI 3D, PulsePay Global, DevOrbit, Aura BioTrack, HyperSonic UI`;
+          responseLine.innerHTML = `Projects: 3D Virtual Interior Design Simulator, IVF Healthcare Counseling, Business Analytics &amp; Power BI Suite, Tally ERP Billing &amp; Administration, Core Java &amp; Relational Database System, UI/UX Presentation Suite`;
+        } else if (cmd === 'education') {
+          responseLine.innerHTML = `Education: BCA (CGPA: 8.65) @ KLE Society's S Nijalingappa College, Bangalore City University (2022–2025) | Pre-University @ R N Shetty PU College (2020–2022)`;
+        } else if (cmd === 'experience') {
+          responseLine.innerHTML = `Experience: Medical Counselor (2026–Present) @ IVF Access Rajajinagar | Accountant &amp; Admin Executive (2025–2026) @ IVF Access | Business Analytics Intern (2025) @ Certisured | Research Head &amp; Student Council (2023–2025)`;
         } else if (cmd === 'hire' || cmd === 'contact') {
-          responseLine.innerHTML = `Direct contact: <span style="color:#FDE047;">raksha.shetty.dev@gmail.com</span> (Bangalore, India)`;
-          showToast('🎉 Let’s build something extraordinary together!');
+          responseLine.innerHTML = `Direct contact: <span style="color:#FDE047;">rakshashetty@gmail.com</span> | Rajajinagar, Bangalore-10`;
+          showToast('🎉 Let’s connect and collaborate!');
         } else if (cmd === 'whoami') {
-          responseLine.innerHTML = `Raksha Shetty — Senior Full-Stack Engineer & Creative Architect`;
+          responseLine.innerHTML = `Raksha — Medical Counselor &amp; Healthcare Administrator | BCA Graduate (CGPA: 8.65)`;
+        } else if (cmd === 'languages') {
+          responseLine.innerHTML = `Languages: English (Fluent), Kannada (Native / Fluent)`;
+        } else if (cmd === 'drone') {
+          responseLine.innerHTML = `VLOS Drone Operations: Completed hands-on training in Visual Line of Sight (VLOS) drone piloting, flight safety protocols, and operations.`;
         } else if (cmd === 'clear') {
           cliHistory.innerHTML = '';
           return;
@@ -860,9 +870,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyEmailBtn = document.getElementById('copy-email-btn');
   if (copyEmailBtn) {
     copyEmailBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText('raksha.shetty.dev@gmail.com').then(() => {
+      navigator.clipboard.writeText('rakshashetty@gmail.com').then(() => {
         playHarmonicTone(5, 0.1);
-        showToast('📬 Email copied: raksha.shetty.dev@gmail.com');
+        showToast('📬 Email copied: rakshashetty@gmail.com');
       });
     });
   }
