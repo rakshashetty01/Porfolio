@@ -90,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      if (cursorDot) cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+      if (cursorDot) cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
     });
 
     function renderCursor() {
       ringX += (mouseX - ringX) * 0.18;
       ringY += (mouseY - ringY) * 0.18;
-      if (cursorRing) cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+      if (cursorRing) cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
       requestAnimationFrame(renderCursor);
     }
     requestAnimationFrame(renderCursor);
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       target.addEventListener('mouseleave', () => {
-        target.style.transform = 'translate3d(0, 0, 0)';
+        target.style.transform = '';
       });
     });
   }
@@ -262,23 +262,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Initial Hero Entrance Sequence
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    // Lock baseline percent transforms to preserve centering
-    gsap.set('#hero-giant-text', { xPercent: -50, yPercent: -50 });
-    gsap.set('#hero-portrait-stage', { xPercent: -50 });
-
     // Step 1: The giant font ("RAKSHA SHETTY") comes in FIRST
+    // Animate inner text element so there is ZERO conflict with outer container scroll parallax
     heroTl.fromTo(
-      '#hero-giant-text',
-      { y: 70, opacity: 0, scale: 0.92 },
-      { y: 0, opacity: 1, scale: 1, duration: 1.2 }
+      '.giant-text-single-line',
+      { y: 80, opacity: 0, scale: 0.94 },
+      { y: 0, opacity: 1, scale: 1, duration: 1.25 }
     );
 
     // Step 2: Then the photo slides UP from bottom into visibility
     heroTl.fromTo(
-      '#hero-portrait-stage',
-      { y: 160, opacity: 0, scale: 0.9 },
+      '#hero-portrait-photo',
+      { y: 180, opacity: 0, scale: 0.9 },
       { y: 0, opacity: 1, scale: 1, duration: 1.35 },
-      '-=0.7' // Starts overlapping as font settles
+      '-=0.75' // Starts overlapping as font settles
+    );
+
+    // Step 2b: Radiance halo aura behind portrait expands
+    heroTl.fromTo(
+      '.portrait-glow-halo',
+      { scale: 0.45, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1.4, ease: 'power2.out' },
+      '-=1.2'
     );
 
     // Step 3: Floating editorial badges glide in
@@ -311,11 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
       '-=0.7'
     );
 
-    // 2. Hero Scroll Parallax (Font & Photo move with scroll depth)
+    // 2. Hero Scroll Parallax (Applied to outer containers, eliminating tween collision)
     if (typeof ScrollTrigger !== 'undefined') {
       gsap.to('#hero-giant-text', {
-        y: -100,
-        scale: 1.08,
+        y: -90,
         opacity: 0.35,
         scrollTrigger: {
           trigger: '#hero',
@@ -326,8 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       gsap.to('#hero-portrait-stage', {
-        y: -60,
-        scale: 1.05,
+        y: -50,
         scrollTrigger: {
           trigger: '#hero',
           start: 'top top',

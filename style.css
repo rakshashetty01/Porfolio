@@ -240,7 +240,7 @@ body {
   height: 38px;
   border: 1.5px solid rgba(128, 0, 0, 0.5);
   background: rgba(128, 0, 0, 0.08);
-  transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, transform 0.05s linear;
+  transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
 }
 
 .cursor-hover .custom-cursor-ring {
@@ -513,7 +513,7 @@ h1, h2, h3, h4, h5, h6 {
    ========================================================================== */
 .dymas-hero-section {
   position: relative;
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -539,38 +539,39 @@ h1, h2, h3, h4, h5, h6 {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  max-width: 100vw;
+  max-width: 100%;
   text-align: center;
   z-index: 1;
   pointer-events: none;
   user-select: none;
-  opacity: 0; /* Animated in first via GSAP */
-  will-change: transform, opacity;
+  opacity: 1;
 }
 
 .giant-text-single-line {
   font-family: var(--font-heading);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   line-height: 0.88;
   white-space: nowrap;
-  font-size: clamp(3.8rem, 11vw, 12.5rem);
-  color: #14101A;
-  background: linear-gradient(180deg, #18121E 0%, #463E50 100%);
+  font-size: clamp(3.8rem, 11.5vw, 13rem);
+  color: #140E10;
+  background: linear-gradient(180deg, #180D12 0%, #4D1826 55%, #800000 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 14px 40px rgba(20, 16, 26, 0.08);
+  filter: drop-shadow(0 14px 40px rgba(128, 0, 0, 0.1));
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 [data-theme="dark"] .giant-text-single-line {
   color: #FFFFFF;
-  background: linear-gradient(180deg, #FFFFFF 15%, rgba(255, 255, 255, 0.65) 100%);
+  background: linear-gradient(180deg, #FFFFFF 15%, #F0D5DA 65%, rgba(200, 100, 120, 0.75) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 60px rgba(128, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.7);
+  filter: drop-shadow(0 0 60px rgba(128, 0, 0, 0.5)) drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
 }
 
 /* Centered Portrait Stage (Emerges from bottom over the font) */
@@ -586,8 +587,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: flex-end;
   z-index: 2;
   pointer-events: none;
-  opacity: 0; /* Slides UP from bottom via GSAP after font */
-  will-change: transform, opacity;
+  opacity: 1;
 }
 
 .hero-portrait-img {
@@ -600,7 +600,7 @@ h1, h2, h3, h4, h5, h6 {
   mask-image: linear-gradient(to bottom, black 0%, black 72%, rgba(0, 0, 0, 0.45) 86%, transparent 100%);
   filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.22));
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+  will-change: transform, opacity;
 }
 
 /* Radiant Halo Aura behind the portrait */
@@ -612,11 +612,12 @@ h1, h2, h3, h4, h5, h6 {
   width: min(440px, 80vw);
   height: min(440px, 80vw);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(128, 0, 0, 0.28) 0%, rgba(168, 40, 40, 0.12) 40%, transparent 70%);
-  filter: blur(50px);
+  background: radial-gradient(circle, rgba(168, 30, 45, 0.32) 0%, rgba(128, 0, 0, 0.22) 40%, transparent 70%);
+  filter: blur(55px);
   pointer-events: none;
   z-index: -1;
   animation: pulseHalo 7s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
 
 @keyframes pulseHalo {
@@ -1276,7 +1277,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
+  object-position: 50% 20%;
   transition: transform 0.4s ease;
 }
 
