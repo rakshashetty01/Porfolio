@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================================================
      DYMAS ALFIN ANIMATION SEQUENCE (ENTRY & SCROLL CHOREOGRAPHY)
      Sequence:
-     1. Giant Font ("VARSHITH GOWDA") animates in first!
+     1. Giant Font ("RAKSHA SHETTY") animates in first!
      2. Then the Photo slides UP from bottom into full visibility!
      3. Then the Role text and buttons slide up into place!
      ========================================================================== */
@@ -900,7 +900,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentThemeIdx = 0;
 
   // Restore persisted theme from localStorage
-  const savedTheme = localStorage.getItem('vg_portfolio_theme');
+  const savedTheme = localStorage.getItem('rs_portfolio_theme');
   if (savedTheme && themes.includes(savedTheme)) {
     currentThemeIdx = themes.indexOf(savedTheme);
     applyTheme(savedTheme, false);
@@ -917,7 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.documentElement.setAttribute('data-theme', 'sakura');
       if (showToastMsg) showToast('🌺 Atmosphere: Sakura Ambient Glow');
     }
-    localStorage.setItem('vg_portfolio_theme', theme);
+    localStorage.setItem('rs_portfolio_theme', theme);
   }
 
   function cycleTheme() {
