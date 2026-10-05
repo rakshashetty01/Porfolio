@@ -156,82 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    const particleCount = isTouch ? 400 : 1000;
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    const maroonColor = new THREE.Color(0x800000);
-    const pearlColor = new THREE.Color(0xf5dcdc);
-
-    for (let i = 0; i < particleCount; i++) {
-      const u = Math.random() * Math.PI * 2;
-      const v = Math.random() * Math.PI * 2;
-      const r = 40 + (Math.random() - 0.5) * 14;
-
-      positions[i * 3] = r * Math.cos(u) * Math.cos(v);
-      positions[i * 3 + 1] = r * Math.sin(u) * 0.65;
-      positions[i * 3 + 2] = r * Math.sin(v);
-
-      const mixed = pearlColor.clone().lerp(maroonColor, Math.random() * 0.7);
-      colors[i * 3] = mixed.r;
-      colors[i * 3 + 1] = mixed.g;
-      colors[i * 3 + 2] = mixed.b;
-    }
-
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    // Generate soft circular bokeh particle texture (eliminating square pixel artifacts)
-    const particleCanvas = document.createElement('canvas');
-    particleCanvas.width = 32;
-    particleCanvas.height = 32;
-    const pCtx = particleCanvas.getContext('2d');
-    const pGrad = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
-    pGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    pGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.65)');
-    pGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    pCtx.fillStyle = pGrad;
-    pCtx.beginPath();
-    pCtx.arc(16, 16, 16, 0, Math.PI * 2);
-    pCtx.fill();
-    const particleTexture = new THREE.CanvasTexture(particleCanvas);
-
-    const material = new THREE.PointsMaterial({
-      size: 1.8,
-      map: particleTexture,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.55,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-
-    const particleSystem = new THREE.Points(geometry, material);
-    particleSystem.position.y = -6;
-    scene.add(particleSystem);
-
-    const pointLight = new THREE.PointLight(0xa81c2d, 2.5, 180);
-    pointLight.position.set(0, 0, 50);
-    scene.add(pointLight);
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
-    scene.add(ambientLight);
-
-    let targetX = 0;
-    let targetY = 0;
-    window.addEventListener('mousemove', (e) => {
-      targetX = (e.clientX / window.innerWidth) * 2 - 1;
-      targetY = -(e.clientY / window.innerHeight) * 2 + 1;
-    });
-
     let clock = new THREE.Clock();
     function animate3D() {
       requestAnimationFrame(animate3D);
       const elapsedTime = clock.getElapsedTime();
-
-      particleSystem.rotation.y = elapsedTime * 0.04;
-      particleSystem.rotation.x = Math.sin(elapsedTime * 0.03) * 0.15;
 
       camera.position.x += (targetX * 12 - camera.position.x) * 0.04;
       camera.position.y += (targetY * 8 - camera.position.y) * 0.04;
@@ -280,13 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
       '-=1.2'
     );
 
-    // Step 3: Floating editorial badges glide in
-    heroTl.fromTo(
-      ['#hero-badge-left', '#hero-badge-right'],
-      { y: 35, opacity: 0, scale: 0.88 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.85, stagger: 0.15 },
-      '-=0.7'
-    );
 
     // Step 4: Role block and socials reveal
 
