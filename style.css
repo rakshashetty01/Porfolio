@@ -271,6 +271,7 @@ h1, h2, h3, h4, h5, h6 {
 .text-gradient {
   background: var(--pink-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
@@ -558,6 +559,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #14101A;
   background: linear-gradient(180deg, #18121E 0%, #463E50 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 14px 40px rgba(20, 16, 26, 0.08);
 }
@@ -566,6 +568,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #FFFFFF;
   background: linear-gradient(180deg, #FFFFFF 15%, rgba(255, 255, 255, 0.65) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 60px rgba(128, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.7);
 }
