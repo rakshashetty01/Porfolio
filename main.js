@@ -106,11 +106,15 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     interactiveElements.forEach((el, idx) => {
       el.addEventListener('mouseenter', () => {
-        document.body.classList.add('cursor-hover');
+        if (el.classList.contains('symbol-dock-btn') || el.closest('.hero-symbols-dock')) {
+          document.body.classList.add('cursor-dock-hover');
+        } else {
+          document.body.classList.add('cursor-hover');
+        }
         playHarmonicTone(idx % notes.length, 0.06);
       });
       el.addEventListener('mouseleave', () => {
-        document.body.classList.remove('cursor-hover');
+        document.body.classList.remove('cursor-hover', 'cursor-dock-hover');
       });
     });
   }
@@ -134,6 +138,22 @@ document.addEventListener('DOMContentLoaded', () => {
         target.style.transform = '';
       });
     });
+  }
+
+  /* ==========================================================================
+     SMART FLOATING NAVBAR SCROLL STATE
+     ========================================================================== */
+  const mainNav = document.getElementById('main-nav');
+  if (mainNav) {
+    const handleNavScroll = () => {
+      if (window.scrollY > 30) {
+        mainNav.classList.add('scrolled');
+      } else {
+        mainNav.classList.remove('scrolled');
+      }
+    };
+    window.addEventListener('scroll', handleNavScroll, { passive: true });
+    handleNavScroll();
   }
 
   /* ==========================================================================
@@ -188,49 +208,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Initial Hero Entrance Sequence
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    // Step 1: The giant font ("RAKSHA") comes in FIRST
+    // Step 1: The giant font ("RAKSHA" outline + "SHETTY" solid) comes in FIRST
     heroTl.fromTo(
-      '.giant-text-single-line',
-      { y: 60, opacity: 0, scale: 0.94 },
-      { y: 0, opacity: 1, scale: 1, duration: 1.15 }
+      ['.hero-word-outline', '.hero-word-solid'],
+      { y: 55, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.15, stagger: 0.12, ease: 'power3.out' }
     );
 
     // Step 2: Then the portrait photo slides UP from bottom into visibility
     heroTl.fromTo(
       '#hero-portrait-photo',
-      { y: 170, opacity: 0, scale: 0.92 },
+      { y: 170, opacity: 0, scale: 0.94 },
       {
         y: 0,
         opacity: 1,
         scale: 1,
         duration: 1.25,
+        ease: 'power3.out',
         onComplete: () => {
           // Continuous, organic breathing / floating animation
           gsap.to('#hero-portrait-photo', {
-            y: -14,
-            duration: 3.2,
+            y: -10,
+            duration: 3.4,
             repeat: -1,
             yoyo: true,
             ease: 'sine.inOut'
           });
         }
       },
-      '-=0.8' // Starts overlapping as font settles
+      '-=0.85'
     );
 
     // Step 2b: Radiance halo aura behind portrait expands
     heroTl.fromTo(
       '.portrait-glow-halo',
-      { scale: 0.45, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 1.25, ease: 'power2.out' },
+      { scale: 0.5, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1.2, ease: 'power2.out' },
       '-=1.1'
     );
 
-    // Step 3: Role block and socials reveal
+    // Step 3: Role block on left slides up
     heroTl.fromTo(
-      ['#hero-role-block', '#hero-meta-block'],
+      '#hero-role-block',
       { y: 35, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.85, stagger: 0.12 },
+      { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' },
+      '-=0.75'
+    );
+
+    // Step 4: Symbol dock buttons stagger in
+    heroTl.fromTo(
+      '.symbol-dock-btn',
+      { y: 20, scale: 0.8, opacity: 0 },
+      { y: 0, scale: 1, opacity: 1, duration: 0.65, stagger: 0.07, ease: 'back.out(1.7)' },
       '-=0.7'
     );
 
@@ -317,71 +346,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ==========================================================================
-     KINETIC TEXT SCRAMBLE / DECRYPT EFFECT
-     ========================================================================== */
-  const scrambleChars = '!<>-_\\/[]{}—=+*^?#________';
-  function scrambleText(element) {
-    const originalText = element.getAttribute('data-text') || element.textContent;
-    let iteration = 0;
-    let interval = null;
 
-    clearInterval(interval);
-    interval = setInterval(() => {
-      element.textContent = originalText
-        .split('')
-        .map((letter, index) => {
-          if (index < iteration) return originalText[index];
-          return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
-        })
-        .join('');
-
-      if (iteration >= originalText.length) clearInterval(interval);
-      iteration += 1 / 2;
-    }, 28);
-  }
-
-  document.querySelectorAll('.scramble-hover').forEach((el) => {
-    el.addEventListener('mouseenter', () => scrambleText(el));
-  });
 
   /* ==========================================================================
-     DYMAS ALFIN MOUSE PARALLAX (Subtle dynamic sway)
+     DYMAS ALFIN 3D MOUSE PARALLAX (Silky GSAP Floating Response)
      ========================================================================== */
   const heroSection = document.getElementById('hero');
   const portraitStage = document.getElementById('hero-portrait-stage');
   const giantTypography = document.getElementById('hero-giant-text');
 
-  if (heroSection && !isTouch) {
+  if (heroSection && !isTouch && typeof gsap !== 'undefined') {
     heroSection.addEventListener('mousemove', (e) => {
       const rect = heroSection.getBoundingClientRect();
-      const xPercent = (e.clientX - rect.left) / rect.width - 0.5;
-      const yPercent = (e.clientY - rect.top) / rect.height - 0.5;
+      const xNorm = (e.clientX - rect.left) / rect.width - 0.5;
+      const yNorm = (e.clientY - rect.top) / rect.height - 0.5;
 
       if (portraitStage) {
-        const moveX = xPercent * 24;
-        const moveY = yPercent * 16;
-        portraitStage.style.transform = `translate(calc(-50% + ${moveX}px), ${moveY}px)`;
+        gsap.to(portraitStage, {
+          xPercent: -50,
+          x: xNorm * 20,
+          y: yNorm * 10,
+          duration: 0.65,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
       }
 
       if (giantTypography) {
-        const textMoveX = xPercent * -28;
-        const textMoveY = yPercent * -16;
-        giantTypography.style.transform = `translate(calc(-50% + ${textMoveX}px), calc(-50% + ${textMoveY}px))`;
+        gsap.to(giantTypography, {
+          xPercent: -50,
+          yPercent: -50,
+          x: xNorm * -20,
+          y: yNorm * -10,
+          duration: 0.8,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        });
       }
     });
 
     heroSection.addEventListener('mouseleave', () => {
-      if (portraitStage) portraitStage.style.transform = 'translateX(-50%)';
-      if (giantTypography) giantTypography.style.transform = 'translate(-50%, -50%)';
+      if (portraitStage) {
+        gsap.to(portraitStage, { xPercent: -50, x: 0, y: 0, duration: 0.85, ease: 'power2.out' });
+      }
+      if (giantTypography) {
+        gsap.to(giantTypography, { xPercent: -50, yPercent: -50, x: 0, y: 0, duration: 0.85, ease: 'power2.out' });
+      }
     });
   }
 
   /* ==========================================================================
-     3D TILT PHYSICS FOR PROJECT CARDS
+     3D TILT PHYSICS FOR PROJECT CARDS & CAPSTONE SPOTLIGHT
      ========================================================================== */
-  const projectCards = document.querySelectorAll('.project-card');
-  projectCards.forEach((card) => {
+  const allWorkCards = document.querySelectorAll('.project-card, .capstone-spotlight-card');
+  allWorkCards.forEach((card) => {
     if (!isTouch) {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
@@ -390,24 +408,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
 
-        const rotateX = ((y - centerY) / centerY) * -6;
-        const rotateY = ((x - centerX) / centerX) * 6;
+        const maxTilt = card.classList.contains('capstone-spotlight-card') ? 3 : 6;
+        const rotateX = ((y - centerY) / centerY) * -maxTilt;
+        const rotateY = ((x - centerX) / centerX) * maxTilt;
 
-        card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
         card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
         card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
       });
 
       card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
       });
     }
   });
 
   /* ==========================================================================
-     PROJECT CATEGORY FILTER TABS
+     CATEGORY FILTER TABS (Spotlight Project vs Clinical Experience)
      ========================================================================== */
   const filterBtns = document.querySelectorAll('.filter-btn');
+  const capstoneHeroCard = document.getElementById('capstone-hero-card');
+  const experienceSubhead = document.getElementById('experience-subhead');
+  const projectCards = document.querySelectorAll('.project-card');
+
   filterBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       filterBtns.forEach((b) => b.classList.remove('active'));
@@ -415,6 +438,31 @@ document.addEventListener('DOMContentLoaded', () => {
       playHarmonicTone(2, 0.08);
 
       const filterVal = btn.getAttribute('data-filter');
+
+      // Capstone spotlight card visibility
+      if (capstoneHeroCard) {
+        if (filterVal === 'all' || filterVal === 'capstone') {
+          capstoneHeroCard.style.display = 'grid';
+          capstoneHeroCard.style.opacity = '0';
+          setTimeout(() => {
+            capstoneHeroCard.style.transition = 'opacity 0.3s ease';
+            capstoneHeroCard.style.opacity = '1';
+          }, 30);
+        } else {
+          capstoneHeroCard.style.display = 'none';
+        }
+      }
+
+      // Experience subhead divider visibility
+      if (experienceSubhead) {
+        if (filterVal === 'all') {
+          experienceSubhead.style.display = 'flex';
+        } else {
+          experienceSubhead.style.display = 'none';
+        }
+      }
+
+      // Regular experience cards visibility
       projectCards.forEach((card) => {
         const category = card.getAttribute('data-category');
         if (filterVal === 'all' || category === filterVal) {
@@ -434,25 +482,57 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ==========================================================================
+     CAPABILITIES DOMAIN FILTER TABS (Clinical Care vs Data/Tech)
+     ========================================================================== */
+  const capFilterBtns = document.querySelectorAll('.cap-filter-btn');
+  const capabilityCards = document.querySelectorAll('.services-grid .service-card');
+
+  capFilterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      capFilterBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      playHarmonicTone(3, 0.08);
+
+      const filterVal = btn.getAttribute('data-cap-filter');
+
+      capabilityCards.forEach((card) => {
+        const cat = card.getAttribute('data-category');
+        if (filterVal === 'all' || cat === filterVal) {
+          card.style.display = 'flex';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.96)';
+          setTimeout(() => {
+            card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1)';
+          }, 35);
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  /* ==========================================================================
      PROJECT DATA & DEEP DIVE MODAL (AUTHENTIC RESUME DATA)
      ========================================================================== */
   const projectsData = {
     interior: {
       title: '3D Virtual Interior Design Web Simulator',
-      tagline: 'Responsive Web Layout & Spatial Dimensioning Simulator',
-      img: 'assets/proj_neuroart.jpg',
+      tagline: 'Academic Capstone Project • Pure Vanilla HTML5, CSS3 & JavaScript ES6 Engine',
+      img: 'assets/proj_interior_simulator.jpg',
       specs: [
         { label: 'Role', val: 'Web Developer & Project Creator' },
-        { label: 'Tech Stack', val: 'HTML5, CSS3, JavaScript ES6, Canvas 2D' },
-        { label: 'Responsive', val: '100% Mobile & Desktop Fluid Grid' },
-        { label: 'Category', val: 'Academic Capstone Project' }
+        { label: 'Architecture', val: 'Pure Vanilla JS ES6 (Zero External Libraries)' },
+        { label: 'Spatial Engine', val: 'HTML5 Canvas 2D/3D Matrix Transform' },
+        { label: 'Academic Standing', val: 'BCA High Distinction (CGPA 8.65)' }
       ],
-      desc: 'Built a responsive website using HTML, CSS, and JavaScript to simulate dynamic interior room layouts. Users can manipulate room dimensions, place virtual furniture models, calculate spatial clearances, and experiment with room aesthetics in an interactive, fluid browser experience.',
+      desc: 'Raksha\'s sole interactive web application capstone developed from first principles using pure vanilla HTML5, CSS3, and JavaScript ES6. Users can interactively manipulate room dimensions, place virtual furniture models, calculate spatial clearances, and experiment with room aesthetics in an interactive, fluid browser experience with zero framework overhead.',
       features: [
-        'Responsive layout simulation adapting seamlessly across mobile, tablet, and high-resolution desktop viewports.',
-        'Interactive drag-and-drop room dimension planning powered by CSS Grid and native JavaScript.',
-        'Dynamic styling controls allowing real-time material, texture, and furniture swaps.',
-        'Lightweight vanilla code footprint optimized for instantaneous browser loading with zero framework bloat.'
+        'Interactive 2D/3D coordinate canvas allowing real-time furniture positioning and isometric perspective.',
+        'Live dimensioning engine calculating room area (16×14ft = 224 sq.ft) and spatial clearance automatically.',
+        'Multi-ambiance lighting engine shifting canvas shadows and color temperatures in real time.',
+        'Zero-framework architecture achieving 60 FPS performance and instant load times with zero bundle overhead.'
       ]
     },
     ivf: {
@@ -557,11 +637,298 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalFeatures = document.getElementById('modal-features');
   const modalDemoBtn = document.getElementById('modal-live-demo-btn');
   const modalCodeBtn = document.getElementById('modal-code-link-btn');
+  const modalSimulatorBox = document.getElementById('modal-interactive-simulator');
+
+  let activeProjectId = null;
+
+  /* ==========================================================================
+     INTERACTIVE 3D ROOM SIMULATOR ENGINE (Vanilla JS & HTML5 Canvas)
+     ========================================================================== */
+  let currentPreset = 'living';
+  let currentLight = 'warm';
+
+  const roomPresets = {
+    living: { width: 16, length: 14, area: 224, clearance: 68, name: 'Living Room' },
+    studio: { width: 12, length: 12, area: 144, clearance: 76, name: 'Compact Studio' },
+    suite:  { width: 20, length: 15, area: 300, clearance: 62, name: 'Master Suite' }
+  };
+
+  const lightThemes = {
+    warm:  { floor: '#B88B58', floorBorder: '#A07545', wall: '#272221', ambient: 'rgba(255, 180, 80, 0.15)', text: '#FDE68A' },
+    day:   { floor: '#D4C8B8', floorBorder: '#BAAC9A', wall: '#2C2E33', ambient: 'rgba(255, 255, 255, 0.10)', text: '#E2E8F0' },
+    night: { floor: '#423732', floorBorder: '#332924', wall: '#15151B', ambient: 'rgba(255, 120, 60, 0.22)', text: '#FCA5A5' }
+  };
+
+  function renderRoomSimulator() {
+    const canvas = document.getElementById('sim-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Retina support
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width > 0 ? rect.width : 760;
+    const h = rect.height > 0 ? rect.height : 290;
+
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+
+    const preset = roomPresets[currentPreset] || roomPresets.living;
+    const theme = lightThemes[currentLight] || lightThemes.warm;
+
+    // Background clear
+    ctx.fillStyle = '#111116';
+    ctx.fillRect(0, 0, w, h);
+
+    // Ambient light overlay
+    const radial = ctx.createRadialGradient(w / 2, h / 2 - 20, 20, w / 2, h / 2, w / 2);
+    radial.addColorStop(0, theme.ambient);
+    radial.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = radial;
+    ctx.fillRect(0, 0, w, h);
+
+    // Isometric origin and scale
+    const cx = w / 2;
+    const cy = h / 2 + 30;
+    const scale = Math.min(w / 40, 18);
+
+    // Isometric projection helpers
+    function toIso(x, y, z = 0) {
+      const isoX = cx + (x - y) * Math.cos(Math.PI / 6) * scale;
+      const isoY = cy + (x + y) * Math.sin(Math.PI / 6) * scale - z * scale;
+      return { x: isoX, y: isoY };
+    }
+
+    const rw = preset.width / 2;
+    const rl = preset.length / 2;
+
+    // Draw Floor polygon
+    const p1 = toIso(-rw, -rl);
+    const p2 = toIso(rw, -rl);
+    const p3 = toIso(rw, rl);
+    const p4 = toIso(-rw, rl);
+
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.lineTo(p3.x, p3.y);
+    ctx.lineTo(p4.x, p4.y);
+    ctx.closePath();
+    ctx.fillStyle = theme.floor;
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = theme.floorBorder;
+    ctx.stroke();
+
+    // Floor grid / wood planks
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.lineWidth = 1;
+    for (let i = -rw + 2; i < rw; i += 2) {
+      const g1 = toIso(i, -rl);
+      const g2 = toIso(i, rl);
+      ctx.beginPath();
+      ctx.moveTo(g1.x, g1.y);
+      ctx.lineTo(g2.x, g2.y);
+      ctx.stroke();
+    }
+
+    // Left Wall
+    const wallHeight = 7;
+    const wTop1 = toIso(-rw, -rl, wallHeight);
+    const wTop4 = toIso(-rw, rl, wallHeight);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(wTop1.x, wTop1.y);
+    ctx.lineTo(wTop4.x, wTop4.y);
+    ctx.lineTo(p4.x, p4.y);
+    ctx.closePath();
+    ctx.fillStyle = theme.wall;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.stroke();
+
+    // Right Back Wall
+    const wTop2 = toIso(rw, -rl, wallHeight);
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(wTop1.x, wTop1.y);
+    ctx.lineTo(wTop2.x, wTop2.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.fill();
+    ctx.stroke();
+
+    // Helper to draw isometric 3D furniture box
+    function drawIsoBox(bx, by, bw, bl, bh, colorTop, colorFront, colorSide, label) {
+      const b1 = toIso(bx, by);
+      const b2 = toIso(bx + bw, by);
+      const b3 = toIso(bx + bw, by + bl);
+      const b4 = toIso(bx, by + bl);
+
+      const t1 = toIso(bx, by, bh);
+      const t2 = toIso(bx + bw, by, bh);
+      const t3 = toIso(bx + bw, by + bl, bh);
+      const t4 = toIso(bx, by + bl, bh);
+
+      // Shadow
+      ctx.beginPath();
+      ctx.ellipse(b3.x - 10, b3.y + 6, bw * scale * 0.7, bl * scale * 0.4, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.fill();
+
+      // Front Face
+      ctx.beginPath();
+      ctx.moveTo(b4.x, b4.y);
+      ctx.lineTo(b3.x, b3.y);
+      ctx.lineTo(t3.x, t3.y);
+      ctx.lineTo(t4.x, t4.y);
+      ctx.closePath();
+      ctx.fillStyle = colorFront;
+      ctx.fill();
+      ctx.stroke();
+
+      // Side Face
+      ctx.beginPath();
+      ctx.moveTo(b3.x, b3.y);
+      ctx.lineTo(b2.x, b2.y);
+      ctx.lineTo(t2.x, t2.y);
+      ctx.lineTo(t3.x, t3.y);
+      ctx.closePath();
+      ctx.fillStyle = colorSide;
+      ctx.fill();
+      ctx.stroke();
+
+      // Top Face
+      ctx.beginPath();
+      ctx.moveTo(t1.x, t1.y);
+      ctx.lineTo(t2.x, t2.y);
+      ctx.lineTo(t3.x, t3.y);
+      ctx.lineTo(t4.x, t4.y);
+      ctx.closePath();
+      ctx.fillStyle = colorTop;
+      ctx.fill();
+      ctx.stroke();
+
+      // Label Pin
+      if (label) {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '600 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, t3.x - 4, t3.y - 6);
+      }
+    }
+
+    // Render furniture based on preset
+    if (currentPreset === 'living') {
+      // Beige Sofa
+      drawIsoBox(-rw + 2, -2, 7, 3, 2.2, '#E8DCB8', '#D4C79F', '#C2B58C', 'Beige Sofa');
+      // Walnut Table
+      drawIsoBox(-rw + 3, 2.5, 4.5, 2.2, 1.2, '#7C5335', '#6B4529', '#57371F', 'Coffee Table');
+      // Nordic Lounge Armchair
+      drawIsoBox(2, 1.5, 2.8, 2.8, 2.0, '#E0D4BA', '#CFC2A6', '#BDAF92', 'Armchair');
+      // Indoor Plant
+      drawIsoBox(-rw + 0.8, -rl + 1.2, 1.5, 1.5, 3.2, '#3E8E41', '#327234', '#285C2B', '🪴 Plant');
+      // Floor Lamp
+      drawIsoBox(rw - 2.5, -rl + 2, 1.2, 1.2, 4.5, '#F59E0B', '#D97706', '#B45309', '💡 Lamp');
+    } else if (currentPreset === 'studio') {
+      // Daybed
+      drawIsoBox(-rw + 1.5, -rl + 1.5, 6, 3, 2.0, '#CBD5E1', '#94A3B8', '#64748B', 'Daybed Studio');
+      // Workdesk
+      drawIsoBox(0.5, -rl + 2, 3.5, 2.0, 2.4, '#B45309', '#92400E', '#78350F', 'Compact Desk');
+      // Chair
+      drawIsoBox(1.5, 1, 1.8, 1.8, 1.8, '#475569', '#334155', '#1E293B', 'Chair');
+      // Floor Lamp
+      drawIsoBox(-rw + 1, rl - 2.5, 1, 1, 4.2, '#F59E0B', '#D97706', '#B45309', '💡 Lamp');
+    } else {
+      // Master Suite King Bed
+      drawIsoBox(-rw + 2, -rl + 2, 7.5, 6.5, 2.4, '#F1F5F9', '#E2E8F0', '#CBD5E1', 'King Bed');
+      // Nightstand L & R
+      drawIsoBox(-rw + 0.5, -rl + 3, 1.2, 1.8, 1.8, '#7C5335', '#6B4529', '#57371F', '');
+      drawIsoBox(-rw + 9.8, -rl + 3, 1.2, 1.8, 1.8, '#7C5335', '#6B4529', '#57371F', '');
+      // Lounge Chair
+      drawIsoBox(3, 1.5, 3.2, 3.2, 2.0, '#E8DCB8', '#D4C79F', '#C2B58C', 'Lounger');
+      // Large Plant
+      drawIsoBox(rw - 2.5, -rl + 2.5, 1.8, 1.8, 3.8, '#2E7D32', '#1B5E20', '#144618', '🌿 Palm');
+    }
+
+    // Dimension Overlays on outer perimeter
+    ctx.strokeStyle = '#F87171';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+
+    // Front Width dimension
+    const dim1 = toIso(-rw, rl + 1.2);
+    const dim2 = toIso(rw, rl + 1.2);
+    ctx.beginPath();
+    ctx.moveTo(dim1.x, dim1.y);
+    ctx.lineTo(dim2.x, dim2.y);
+    ctx.stroke();
+
+    // Length dimension
+    const dim3 = toIso(rw + 1.2, -rl);
+    const dim4 = toIso(rw + 1.2, rl);
+    ctx.beginPath();
+    ctx.moveTo(dim3.x, dim3.y);
+    ctx.lineTo(dim4.x, dim4.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dimension labels
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '700 12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${preset.width} ft Width`, (dim1.x + dim2.x) / 2, (dim1.y + dim2.y) / 2 + 16);
+    ctx.fillText(`${preset.length} ft Length`, (dim3.x + dim4.x) / 2 + 14, (dim3.y + dim4.y) / 2);
+
+    // Update DOM Metrics Readout
+    const areaEl = document.getElementById('sim-area-val');
+    const dimEl = document.getElementById('sim-dim-val');
+    const clearanceEl = document.getElementById('sim-clearance-val');
+    if (areaEl) areaEl.textContent = `${preset.area} sq.ft`;
+    if (dimEl) dimEl.textContent = `${preset.width}ft × ${preset.length}ft`;
+    if (clearanceEl) clearanceEl.textContent = `${preset.clearance}% Free`;
+  }
+
+  function initRoomSimulator() {
+    renderRoomSimulator();
+
+    // Hook preset buttons
+    const presetBtns = document.querySelectorAll('#sim-preset-btns button');
+    presetBtns.forEach((btn) => {
+      btn.onclick = () => {
+        presetBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPreset = btn.getAttribute('data-preset') || 'living';
+        playHarmonicTone(3, 0.08);
+        renderRoomSimulator();
+      };
+    });
+
+    // Hook lighting buttons
+    const lightBtns = document.querySelectorAll('#sim-light-btns button');
+    lightBtns.forEach((btn) => {
+      btn.onclick = () => {
+        lightBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLight = btn.getAttribute('data-light') || 'warm';
+        playHarmonicTone(4, 0.08);
+        renderRoomSimulator();
+      };
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    if (activeProjectId === 'interior') renderRoomSimulator();
+  });
 
   function openProjectModal(projectId) {
     const data = projectsData[projectId];
     if (!data) return;
 
+    activeProjectId = projectId;
     modalTitle.textContent = data.title;
     modalTagline.textContent = data.tagline;
     modalImg.src = data.img;
@@ -580,18 +947,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalFeatures.innerHTML = data.features.map((f) => `<li>${f}</li>`).join('');
 
+    // Toggle interactive simulator widget for interior capstone
+    if (projectId === 'interior') {
+      if (modalSimulatorBox) {
+        modalSimulatorBox.style.display = 'block';
+        setTimeout(initRoomSimulator, 50);
+      }
+      if (modalDemoBtn) {
+        modalDemoBtn.innerHTML = `
+          <span>Try Interactive Simulator</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        `;
+      }
+    } else {
+      if (modalSimulatorBox) {
+        modalSimulatorBox.style.display = 'none';
+      }
+      if (modalDemoBtn) {
+        modalDemoBtn.innerHTML = `
+          <span>Explore Detailed Workflow</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        `;
+      }
+    }
+
     projectModal.classList.add('active');
     document.body.style.overflow = 'hidden';
     playHarmonicTone(4, 0.1);
   }
 
   function closeProjectModal() {
+    activeProjectId = null;
     projectModal.classList.remove('active');
     document.body.style.overflow = '';
     playHarmonicTone(1, 0.08);
   }
 
-  projectCards.forEach((card) => {
+  allWorkCards.forEach((card) => {
     card.addEventListener('click', () => {
       const pid = card.getAttribute('data-project-id');
       if (pid) openProjectModal(pid);
@@ -608,17 +1004,23 @@ document.addEventListener('DOMContentLoaded', () => {
   if (modalDemoBtn) {
     modalDemoBtn.addEventListener('click', () => {
       playHarmonicTone(5, 0.15);
-      showToast('🚀 Launching live interactive sandbox environment...');
-      setTimeout(() => {
-        showToast('✨ Live demo telemetry active & synchronized!');
-      }, 1400);
+      if (activeProjectId === 'interior' && modalSimulatorBox) {
+        modalSimulatorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('🎯 Interactive Room Simulator focused!');
+      } else {
+        showToast('🚀 Verified professional workflow telemetry active!');
+      }
     });
   }
 
   if (modalCodeBtn) {
     modalCodeBtn.addEventListener('click', () => {
       playHarmonicTone(3, 0.1);
-      showToast('📖 Architecture diagram & documentation opened!');
+      if (activeProjectId === 'interior') {
+        showToast('⚡ Vanilla JS & Canvas Architecture: Zero Frameworks, 60 FPS Native DOM');
+      } else {
+        showToast('📋 Professional credentials & verified responsibilities loaded.');
+      }
     });
   }
 
@@ -630,13 +1032,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const resumeCloseBtn = document.getElementById('resume-close-btn');
   const downloadPdfBtn = document.getElementById('download-resume-pdf-btn');
 
-  if (openResumeBtn) {
-    openResumeBtn.addEventListener('click', () => {
-      resumeModal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      playHarmonicTone(4, 0.1);
-    });
-  }
+  const aboutOpenResumeBtn = document.getElementById('about-open-resume-btn');
+
+  [openResumeBtn, aboutOpenResumeBtn].forEach((btn) => {
+    if (btn) {
+      btn.addEventListener('click', () => {
+        resumeModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        playHarmonicTone(4, 0.1);
+      });
+    }
+  });
 
   if (resumeCloseBtn) {
     resumeCloseBtn.addEventListener('click', () => {
@@ -658,10 +1064,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (downloadPdfBtn) {
     downloadPdfBtn.addEventListener('click', () => {
       playHarmonicTone(5, 0.12);
-      showToast('📄 Preparing Raksha_Shetty_Resume.pdf download...');
-      setTimeout(() => {
-        showToast('✅ Download started successfully!');
-      }, 1200);
+      showToast('✅ Raksha_Shetty_Resume.pdf downloaded successfully!');
     });
   }
 
@@ -743,6 +1146,9 @@ document.addEventListener('DOMContentLoaded', () => {
             resumeModal.classList.add('active');
             document.body.style.overflow = 'hidden';
           }
+        } else if (action === 'link') {
+          const url = item.getAttribute('data-url');
+          if (url) window.open(url, '_blank');
         } else if (action === 'theme') {
           cycleTheme();
         } else if (action === 'sound') {
@@ -780,9 +1186,11 @@ document.addEventListener('DOMContentLoaded', () => {
           responseLine.innerHTML = `
             Available Commands:<br>
             • <span style="color:#A5B4FC;">skills</span> — inspect skills &amp; competencies<br>
-            • <span style="color:#A5B4FC;">works</span> — list production projects &amp; capstone<br>
+            • <span style="color:#A5B4FC;">works</span> — capstone project &amp; career track<br>
+            • <span style="color:#A5B4FC;">linkedin</span> — open Raksha's LinkedIn profile<br>
             • <span style="color:#A5B4FC;">education</span> — academic credentials (BCA CGPA: 8.65)<br>
             • <span style="color:#A5B4FC;">experience</span> — professional experience at IVF Access<br>
+            • <span style="color:#A5B4FC;">activities</span> — internships, research head &amp; student council<br>
             • <span style="color:#A5B4FC;">hire</span> — connect with Raksha directly<br>
             • <span style="color:#A5B4FC;">whoami</span> — professional profile &amp; summary<br>
             • <span style="color:#A5B4FC;">languages</span> — spoken languages<br>
@@ -793,13 +1201,25 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (cmd === 'skills') {
           responseLine.innerHTML = `Skills: [Data Analysis &amp; Reporting (Power BI, Advanced Excel), Documentation (Word, PPT, Outlook), Business Systems (Tally ERP, CRM), Programming (Core Java, SQL, HTML, CSS, JS), Design (Figma, Canva)]`;
         } else if (cmd === 'works' || cmd === 'projects') {
-          responseLine.innerHTML = `Projects: 3D Virtual Interior Design Simulator, IVF Healthcare Counseling, Business Analytics &amp; Power BI Suite, Tally ERP Billing &amp; Administration, Core Java &amp; Relational Database System, UI/UX Presentation Suite`;
+          responseLine.innerHTML = `Sole Technical Project: 3D Virtual Interior Design Simulator (Academic Capstone) | Professional Experience: IVF Healthcare Counseling, Business Analytics Suite, Tally ERP Billing &amp; Ops, Core Java &amp; SQL Training, UI/UX Presentation Practice`;
+        } else if (cmd === 'linkedin') {
+          responseLine.innerHTML = `LinkedIn Profile: <a href="https://www.linkedin.com/in/raksha-shetty-591157250/" target="_blank" rel="noopener noreferrer" style="color:#60A5FA; text-decoration:underline;">linkedin.com/in/raksha-shetty-591157250</a>`;
+          window.open('https://www.linkedin.com/in/raksha-shetty-591157250/', '_blank');
         } else if (cmd === 'education') {
           responseLine.innerHTML = `Education: BCA (CGPA: 8.65) @ KLE Society's S Nijalingappa College, Bangalore City University (2022–2025) | Pre-University @ R N Shetty PU College (2020–2022)`;
         } else if (cmd === 'experience') {
           responseLine.innerHTML = `Experience: Medical Counselor (2026–Present) @ IVF Access Rajajinagar | Accountant &amp; Admin Executive (2025–2026) @ IVF Access | Business Analytics Intern (2025) @ Certisured | Research Head &amp; Student Council (2023–2025)`;
+        } else if (cmd === 'activities' || cmd === 'internships' || cmd === 'research') {
+          responseLine.innerHTML = `
+            <span style="color:#FDE047; font-weight:700;">Internships, Leadership &amp; Activities:</span><br>
+            • 🔬 <strong>Research Head &amp; Student Council Member</strong> | 2023–2025 (KLE S Nijalingappa College)<br>
+            • 📈 <strong>Business Analytics Internship</strong> | Certisured (2025)<br>
+            • 🏆 <strong>Java Core &amp; Web Development</strong> | Certified by Anudip Foundation<br>
+            • 🏛️ <strong>3D Virtual Interior Design Project</strong> | Web-Based Room Layout Simulator<br>
+            • 🚁 <strong>VLOS Drone Operations</strong> | Hands-on Pilot Training &amp; Flight Safety
+          `;
         } else if (cmd === 'hire' || cmd === 'contact') {
-          responseLine.innerHTML = `Direct contact: <span style="color:#FDE047;">rakshashetty@gmail.com</span> | Rajajinagar, Bangalore-10`;
+          responseLine.innerHTML = `Direct contact: <span style="color:#FDE047;">rakshashetty@gmail.com</span> | Rajajinagar, Bangalore-10<br>LinkedIn: <a href="https://www.linkedin.com/in/raksha-shetty-591157250/" target="_blank" rel="noopener noreferrer" style="color:#60A5FA; text-decoration:underline;">linkedin.com/in/raksha-shetty-591157250</a>`;
           showToast('🎉 Let’s connect and collaborate!');
         } else if (cmd === 'whoami') {
           responseLine.innerHTML = `Raksha — Medical Counselor &amp; Healthcare Administrator | BCA Graduate (CGPA: 8.65)`;
