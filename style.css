@@ -608,6 +608,7 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
   pointer-events: none;
   opacity: 1;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-portrait-img {
@@ -619,7 +620,6 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-mask-image: linear-gradient(to bottom, black 0%, black 72%, rgba(0, 0, 0, 0.45) 86%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 0%, black 72%, rgba(0, 0, 0, 0.45) 86%, transparent 100%);
   filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.22));
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
 }
 
@@ -665,7 +665,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-role-block {
   max-width: 460px;
-  opacity: 0; /* Animated in via GSAP */
 }
 
 .hero-role-title {
@@ -708,7 +707,6 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   align-items: flex-end;
   gap: 16px;
-  opacity: 0; /* Animated in via GSAP */
 }
 
 .hero-social-list {

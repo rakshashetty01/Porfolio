@@ -137,91 +137,100 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     THREE.JS 3D WEBGL INTERACTIVE CANVAS
+     THREE.JS 3D WEBGL INTERACTIVE CANVAS (Safely Guarded)
      ========================================================================== */
   const webglContainer = document.getElementById('webgl-canvas-container');
   if (webglContainer && typeof THREE !== 'undefined') {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 85;
+    try {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 85;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    webglContainer.appendChild(renderer.domElement);
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
       renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      webglContainer.appendChild(renderer.domElement);
 
-    let clock = new THREE.Clock();
-    function animate3D() {
-      requestAnimationFrame(animate3D);
-      const elapsedTime = clock.getElapsedTime();
+      let targetX = 0;
+      let targetY = 0;
+      window.addEventListener('mousemove', (e) => {
+        targetX = (e.clientX / window.innerWidth) * 2 - 1;
+        targetY = -(e.clientY / window.innerHeight) * 2 + 1;
+      }, { passive: true });
 
-      camera.position.x += (targetX * 12 - camera.position.x) * 0.04;
-      camera.position.y += (targetY * 8 - camera.position.y) * 0.04;
-      camera.lookAt(scene.position);
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }, { passive: true });
 
-      pointLight.position.x = targetX * 60;
-      pointLight.position.y = targetY * 40;
-
-      renderer.render(scene, camera);
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+        camera.position.x += (targetX * 6 - camera.position.x) * 0.04;
+        camera.position.y += (targetY * 4 - camera.position.y) * 0.04;
+        camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+      }
+      animate3D();
+    } catch (err) {
+      console.warn('Three.js canvas safely bypassed:', err);
     }
-    animate3D();
   }
 
   /* ==========================================================================
      DYMAS ALFIN ANIMATION SEQUENCE (ENTRY & SCROLL CHOREOGRAPHY)
      Sequence:
-     1. Giant Font ("RAKSHA SHETTY") animates in first!
-     2. Then the Photo slides UP from bottom into full visibility!
+     1. Giant Font ("RAKSHA") animates in first!
+     2. Then the Photo slides UP from bottom into full visibility & begins organic float!
      3. Then the Role text and buttons slide up into place!
      ========================================================================== */
   if (typeof gsap !== 'undefined') {
     // 1. Initial Hero Entrance Sequence
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    // Step 1: The giant font ("RAKSHA SHETTY") comes in FIRST
-    // Animate inner text element so there is ZERO conflict with outer container scroll parallax
+    // Step 1: The giant font ("RAKSHA") comes in FIRST
     heroTl.fromTo(
       '.giant-text-single-line',
-      { y: 80, opacity: 0, scale: 0.94 },
-      { y: 0, opacity: 1, scale: 1, duration: 1.25 }
+      { y: 60, opacity: 0, scale: 0.94 },
+      { y: 0, opacity: 1, scale: 1, duration: 1.15 }
     );
 
-    // Step 2: Then the photo slides UP from bottom into visibility
+    // Step 2: Then the portrait photo slides UP from bottom into visibility
     heroTl.fromTo(
       '#hero-portrait-photo',
-      { y: 180, opacity: 0, scale: 0.9 },
-      { y: 0, opacity: 1, scale: 1, duration: 1.35 },
-      '-=0.75' // Starts overlapping as font settles
+      { y: 170, opacity: 0, scale: 0.92 },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 1.25,
+        onComplete: () => {
+          // Continuous, organic breathing / floating animation
+          gsap.to('#hero-portrait-photo', {
+            y: -14,
+            duration: 3.2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut'
+          });
+        }
+      },
+      '-=0.8' // Starts overlapping as font settles
     );
 
     // Step 2b: Radiance halo aura behind portrait expands
     heroTl.fromTo(
       '.portrait-glow-halo',
       { scale: 0.45, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 1.4, ease: 'power2.out' },
-      '-=1.2'
+      { scale: 1, opacity: 1, duration: 1.25, ease: 'power2.out' },
+      '-=1.1'
     );
 
-
-    // Step 4: Role block and socials reveal
-
+    // Step 3: Role block and socials reveal
     heroTl.fromTo(
-      '#hero-role-block',
-      { y: 40, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.9 },
-      '-=0.6'
-    );
-
-    heroTl.fromTo(
-      '#hero-meta-block',
-      { y: 40, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.9 },
+      ['#hero-role-block', '#hero-meta-block'],
+      { y: 35, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.85, stagger: 0.12 },
       '-=0.7'
     );
 
@@ -249,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // 3. EVERY SECTION SCROLL-DRIVEN SEQUENCE:
-      // For every section:
       const sections = ['#works', '#services', '#skills', '#about', '#experience', '#education', '#contact'];
 
       sections.forEach((secId) => {
@@ -262,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const secTl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
-            start: 'top 75%',
+            start: 'top 78%',
             toggleActions: 'play none none none'
           },
           defaults: { ease: 'power3.out' }
@@ -272,21 +280,40 @@ document.addEventListener('DOMContentLoaded', () => {
         if (head) {
           secTl.fromTo(
             head,
-            { y: 70, opacity: 0 },
+            { y: 60, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.9 }
           );
         }
 
-        // Step 2: Photos / Cards slide UP into visibility!
+        // Step 2: Photos / Cards slide UP into visibility with transform cleared on finish
         if (cards && cards.length > 0) {
           secTl.fromTo(
             cards,
-            { y: 130, opacity: 0, scale: 0.92 },
-            { y: 0, opacity: 1, scale: 1, duration: 1.1, stagger: 0.16 },
+            { y: 110, opacity: 0, scale: 0.93 },
+            { y: 0, opacity: 1, scale: 1, duration: 1.0, stagger: 0.14, clearProps: 'transform' },
             '-=0.5' // Photo/cards rise up as font settles
           );
         }
       });
+
+      // 4. SKILL PROGRESS BARS REVEAL
+      const skillsSection = document.querySelector('#skills');
+      if (skillsSection) {
+        const skillFills = skillsSection.querySelectorAll('.skill-meter-fill');
+        if (skillFills.length > 0) {
+          gsap.from(skillFills, {
+            width: '0%',
+            duration: 1.3,
+            ease: 'power2.out',
+            stagger: 0.08,
+            scrollTrigger: {
+              trigger: '#skills',
+              start: 'top 75%',
+              toggleActions: 'play none none none'
+            }
+          });
+        }
+      }
     }
   }
 
@@ -322,10 +349,8 @@ document.addEventListener('DOMContentLoaded', () => {
      DYMAS ALFIN MOUSE PARALLAX (Subtle dynamic sway)
      ========================================================================== */
   const heroSection = document.getElementById('hero');
-  const portraitPhoto = document.getElementById('hero-portrait-photo');
+  const portraitStage = document.getElementById('hero-portrait-stage');
   const giantTypography = document.getElementById('hero-giant-text');
-  const badgeLeft = document.getElementById('hero-badge-left');
-  const badgeRight = document.getElementById('hero-badge-right');
 
   if (heroSection && !isTouch) {
     heroSection.addEventListener('mousemove', (e) => {
@@ -333,10 +358,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const xPercent = (e.clientX - rect.left) / rect.width - 0.5;
       const yPercent = (e.clientY - rect.top) / rect.height - 0.5;
 
-      if (portraitPhoto) {
-        const moveX = xPercent * 22;
+      if (portraitStage) {
+        const moveX = xPercent * 24;
         const moveY = yPercent * 16;
-        portraitPhoto.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+        portraitStage.style.transform = `translate(calc(-50% + ${moveX}px), ${moveY}px)`;
       }
 
       if (giantTypography) {
@@ -344,20 +369,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const textMoveY = yPercent * -16;
         giantTypography.style.transform = `translate(calc(-50% + ${textMoveX}px), calc(-50% + ${textMoveY}px))`;
       }
-
-      if (badgeLeft) {
-        badgeLeft.style.transform = `translate3d(${xPercent * 16}px, ${yPercent * 12}px, 0)`;
-      }
-      if (badgeRight) {
-        badgeRight.style.transform = `translate3d(${xPercent * 22}px, ${yPercent * 18}px, 0)`;
-      }
     });
 
     heroSection.addEventListener('mouseleave', () => {
-      if (portraitPhoto) portraitPhoto.style.transform = 'translate3d(0, 0, 0)';
+      if (portraitStage) portraitStage.style.transform = 'translateX(-50%)';
       if (giantTypography) giantTypography.style.transform = 'translate(-50%, -50%)';
-      if (badgeLeft) badgeLeft.style.transform = '';
-      if (badgeRight) badgeRight.style.transform = '';
     });
   }
 
