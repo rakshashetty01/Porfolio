@@ -182,35 +182,34 @@ document.addEventListener('DOMContentLoaded', () => {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
+    // Generate soft circular bokeh particle texture (eliminating square pixel artifacts)
+    const particleCanvas = document.createElement('canvas');
+    particleCanvas.width = 32;
+    particleCanvas.height = 32;
+    const pCtx = particleCanvas.getContext('2d');
+    const pGrad = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    pGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    pGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.65)');
+    pGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    pCtx.fillStyle = pGrad;
+    pCtx.beginPath();
+    pCtx.arc(16, 16, 16, 0, Math.PI * 2);
+    pCtx.fill();
+    const particleTexture = new THREE.CanvasTexture(particleCanvas);
+
     const material = new THREE.PointsMaterial({
-      size: 1.6,
+      size: 1.8,
+      map: particleTexture,
       vertexColors: true,
       transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     });
 
     const particleSystem = new THREE.Points(geometry, material);
     particleSystem.position.y = -6;
     scene.add(particleSystem);
-
-    const crystals = [];
-    const crystalGeo = new THREE.IcosahedronGeometry(3.2, 0);
-    const crystalMat = new THREE.MeshPhongMaterial({
-      color: 0xf5dcdc,
-      emissive: 0x800000,
-      emissiveIntensity: 0.25,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.45
-    });
-
-    for (let i = 0; i < 4; i++) {
-      const mesh = new THREE.Mesh(crystalGeo, crystalMat);
-      mesh.position.set((Math.random() - 0.5) * 90, (Math.random() - 0.5) * 45, (Math.random() - 0.5) * 30);
-      scene.add(mesh);
-      crystals.push({ mesh, rx: (Math.random() - 0.5) * 0.015, ry: (Math.random() - 0.5) * 0.015 });
-    }
 
     const pointLight = new THREE.PointLight(0xa81c2d, 2.5, 180);
     pointLight.position.set(0, 0, 50);
@@ -240,11 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       pointLight.position.x = targetX * 60;
       pointLight.position.y = targetY * 40;
-
-      crystals.forEach((c) => {
-        c.mesh.rotation.x += c.rx;
-        c.mesh.rotation.y += c.ry;
-      });
 
       renderer.render(scene, camera);
     }
@@ -294,13 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
       '-=0.7'
     );
 
-    // Step 4: Status pill, role block, and socials reveal
-    heroTl.fromTo(
-      '#hero-status-pill',
-      { y: -30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8 },
-      '-=0.7'
-    );
+    // Step 4: Role block and socials reveal
 
     heroTl.fromTo(
       '#hero-role-block',

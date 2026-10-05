@@ -692,55 +692,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
-/* Status Pill */
-.hero-floating-pill {
-  position: absolute;
-  padding: 8px 18px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-delicate);
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-md);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-title);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 5;
-  pointer-events: auto;
-  opacity: 0;
-  animation: floatSlow 6s ease-in-out infinite alternate;
-}
-
-.pill-status-top {
-  top: 125px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.status-dot-pulse {
-  position: relative;
-  width: 8px;
-  height: 8px;
-  background: #10B981;
-  border-radius: 50%;
-}
-
-.status-dot-pulse::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.4);
-  animation: pulseGreen 2s infinite ease-out;
-}
-
-@keyframes pulseGreen {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2.4); opacity: 0; }
-}
 
 /* Bottom Bar (Role on left, Socials on right) */
 .hero-bottom-bar {
