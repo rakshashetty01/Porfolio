@@ -571,10 +571,10 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   line-height: 0.88;
   white-space: nowrap;
-  font-size: clamp(3.8rem, 11.5vw, 13rem);
+  font-size: clamp(2.4rem, 7.6vw, 8.6rem);
   color: #140E10;
   background: linear-gradient(180deg, #180D12 0%, #4D1826 55%, #800000 100%);
   -webkit-background-clip: text;
