@@ -161,8 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const pinkColor = new THREE.Color(0xee4475);
-    const pearlColor = new THREE.Color(0xfed0dc);
+    const maroonColor = new THREE.Color(0x800000);
+    const pearlColor = new THREE.Color(0xf5dcdc);
 
     for (let i = 0; i < particleCount; i++) {
       const u = Math.random() * Math.PI * 2;
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
       positions[i * 3 + 1] = r * Math.sin(u) * 0.65;
       positions[i * 3 + 2] = r * Math.sin(v);
 
-      const mixed = pearlColor.clone().lerp(pinkColor, Math.random() * 0.6);
+      const mixed = pearlColor.clone().lerp(maroonColor, Math.random() * 0.7);
       colors[i * 3] = mixed.r;
       colors[i * 3 + 1] = mixed.g;
       colors[i * 3 + 2] = mixed.b;
@@ -197,9 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const crystals = [];
     const crystalGeo = new THREE.IcosahedronGeometry(3.2, 0);
     const crystalMat = new THREE.MeshPhongMaterial({
-      color: 0xffd1dc,
-      emissive: 0xee4475,
-      emissiveIntensity: 0.15,
+      color: 0xf5dcdc,
+      emissive: 0x800000,
+      emissiveIntensity: 0.25,
       wireframe: true,
       transparent: true,
       opacity: 0.45
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
       crystals.push({ mesh, rx: (Math.random() - 0.5) * 0.015, ry: (Math.random() - 0.5) * 0.015 });
     }
 
-    const pointLight = new THREE.PointLight(0xee4475, 2.2, 180);
+    const pointLight = new THREE.PointLight(0xa81c2d, 2.5, 180);
     pointLight.position.set(0, 0, 50);
     scene.add(pointLight);
 
@@ -843,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const userLine = document.createElement('div');
         userLine.className = 'cli-line-output';
-        userLine.innerHTML = `<span style="color:#FF7B90; font-weight:700;">rs:~$</span> ${escapeHTML(rawCmd)}`;
+        userLine.innerHTML = `<span style="color:#C93434; font-weight:700;">rs:~$</span> ${escapeHTML(rawCmd)}`;
         cliHistory.appendChild(userLine);
 
         const responseLine = document.createElement('div');
@@ -896,7 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
      ATMOSPHERE / THEME SWITCHER
      ========================================================================== */
   const themeBtn = document.getElementById('theme-toggle-btn');
-  const themes = ['default', 'dark', 'sakura'];
+  const themes = ['default', 'dark', 'wine', 'garnet'];
   let currentThemeIdx = 0;
 
   // Restore persisted theme from localStorage
@@ -909,13 +909,16 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyTheme(theme, showToastMsg = true) {
     if (theme === 'default') {
       document.documentElement.removeAttribute('data-theme');
-      if (showToastMsg) showToast('🌸 Atmosphere: Pearl White & Rose Gold');
+      if (showToastMsg) showToast('🍷 Atmosphere: Royal Maroon & Alabaster');
     } else if (theme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
-      if (showToastMsg) showToast('🌙 Atmosphere: Obsidian Luxury Dark');
-    } else if (theme === 'sakura') {
-      document.documentElement.setAttribute('data-theme', 'sakura');
-      if (showToastMsg) showToast('🌺 Atmosphere: Sakura Ambient Glow');
+      if (showToastMsg) showToast('🌙 Atmosphere: Velvet Obsidian & Deep Maroon');
+    } else if (theme === 'wine') {
+      document.documentElement.setAttribute('data-theme', 'wine');
+      if (showToastMsg) showToast('🍇 Atmosphere: Imperial Wine & Velvet Glow');
+    } else if (theme === 'garnet') {
+      document.documentElement.setAttribute('data-theme', 'garnet');
+      if (showToastMsg) showToast('💎 Atmosphere: Radiant Garnet & Pure Gold');
     }
     localStorage.setItem('rs_portfolio_theme', theme);
   }

@@ -7,9 +7,10 @@ A high-performance personal portfolio featuring editorial typography, WebGL 3D g
 ## ✨ Features
 
 - **Editorial Typography & Choreography**: Custom scroll-driven entrance inspired by contemporary high-fashion editorial layouts.
-- **Dual Atmosphere Design**:
-  - 🌸 **Pearl White & Rose Gold** (Editorial Minimalist)
-  - 🌙 **Obsidian Luxury Dark** (Onyx & Cyber Violet with glowing glassmorphism)
+- **Royal Maroon Aesthetic & Atmosphere Modes**:
+  - 🍷 **Royal Maroon & Alabaster** (`#800000` signature luxury palette)
+  - 🌙 **Velvet Obsidian & Deep Maroon** (Dark mode with glowing crimson accents)
+  - 🍇 **Imperial Wine & Garnet Glow** (Rich wine-toned editorial variant)
 - **High-Definition Executive Imagery**: Studio portraiture and transparent cutout integration with ambient radial backlighting.
 - **Three.js WebGL & 2D Mist Shaders**: Real-time reactive geometric canvas and ambient particle mesh.
 - **Interactive In-Browser CLI**: Functional command line terminal simulating bash commands (`help`, `skills`, `matrix`, `hire`, `clear`).

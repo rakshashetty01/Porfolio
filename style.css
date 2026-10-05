@@ -4,47 +4,60 @@
    1. Giant typography animates in first.
    2. Photo slides UP from bottom into full visibility.
    3. Every section triggers: Giant Font reveals FIRST -> Photos/Cards slide UP visible.
-   Theme: Pearl White & Ethereal Baby Pink
+   Theme: Alabaster & Signature Royal Maroon (#800000)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Color Palette - Pearl White & Delicate Baby Pink */
+  /* Color Palette - Alabaster & Royal Maroon (#800000) */
   --bg-main: #FFFFFF;
-  --bg-subtle: #FFF7F9;
-  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-subtle: #FAF4F4;
+  --bg-card: rgba(255, 255, 255, 0.9);
   --bg-card-hover: rgba(255, 255, 255, 0.98);
-  --bg-glass: rgba(255, 255, 255, 0.75);
-  --bg-glass-nav: rgba(255, 255, 255, 0.85);
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-glass-nav: rgba(255, 255, 255, 0.9);
 
-  /* Baby Pink Gradient Scales */
-  --pink-50: #FFF5F7;
-  --pink-100: #FFE6ED;
-  --pink-200: #FED0DC;
-  --pink-300: #FBA7BC;
-  --pink-400: #F77699;
-  --pink-500: #EE4475;
-  --pink-600: #D8255B;
-  --pink-gradient: linear-gradient(135deg, #FF94B8 0%, #EE4475 100%);
-  --pink-glow: rgba(238, 68, 117, 0.35);
+  /* Signature Royal Maroon (#800000) Scale */
+  --maroon-50: #FAF2F2;
+  --maroon-100: #F3E2E2;
+  --maroon-200: #E4C0C0;
+  --maroon-300: #CE9696;
+  --maroon-400: #A82828;
+  --maroon-500: #800000;
+  --maroon-600: #660000;
+  --maroon-700: #4A0000;
+  --maroon-gradient: linear-gradient(135deg, #A82828 0%, #800000 100%);
+  --maroon-glow: rgba(128, 0, 0, 0.32);
+
+  /* Theme token aliases (for backward-compatibility with existing selectors) */
+  --pink-50: var(--maroon-50);
+  --pink-100: var(--maroon-100);
+  --pink-200: var(--maroon-200);
+  --pink-300: var(--maroon-300);
+  --pink-400: var(--maroon-400);
+  --pink-500: var(--maroon-500);
+  --pink-600: var(--maroon-600);
+  --pink-gradient: var(--maroon-gradient);
+  --pink-glow: var(--maroon-glow);
 
   /* High Contrast Obsidian Text */
-  --text-title: #14101A;
-  --text-body: #4E4756;
-  --text-muted: #8E8497;
-  --text-pink: #EE4475;
+  --text-title: #140E10;
+  --text-body: #4E4246;
+  --text-muted: #8E7E84;
+  --text-pink: #800000;
+  --text-maroon: #800000;
 
   /* Borders & Dividers */
-  --border-delicate: rgba(247, 118, 153, 0.18);
-  --border-hover: rgba(238, 68, 117, 0.45);
+  --border-delicate: rgba(128, 0, 0, 0.16);
+  --border-hover: rgba(128, 0, 0, 0.52);
   --border-light: rgba(255, 255, 255, 0.95);
 
-  /* Shadows */
-  --shadow-sm: 0 4px 14px rgba(238, 68, 117, 0.06);
-  --shadow-md: 0 16px 36px -10px rgba(238, 68, 117, 0.14), 0 4px 12px rgba(0, 0, 0, 0.02);
-  --shadow-lg: 0 30px 65px -15px rgba(238, 68, 117, 0.22), 0 10px 30px rgba(0, 0, 0, 0.04);
-  --shadow-pill: 0 8px 24px rgba(238, 68, 117, 0.3);
+  /* Shadows with rich Maroon ambiance */
+  --shadow-sm: 0 4px 14px rgba(128, 0, 0, 0.06);
+  --shadow-md: 0 16px 36px -10px rgba(128, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 30px 65px -15px rgba(128, 0, 0, 0.22), 0 10px 30px rgba(0, 0, 0, 0.04);
+  --shadow-pill: 0 8px 24px rgba(128, 0, 0, 0.32);
 
   /* Typography */
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -60,48 +73,49 @@
 
 /* Theme Variants */
 [data-theme="dark"] {
-  --bg-main: #0B080F;
-  --bg-subtle: #130E1B;
-  --bg-card: rgba(22, 18, 30, 0.85);
-  --bg-card-hover: rgba(32, 26, 44, 0.98);
-  --bg-glass: rgba(18, 14, 25, 0.8);
-  --bg-glass-nav: rgba(14, 11, 20, 0.9);
+  --bg-main: #0B0709;
+  --bg-subtle: #140C0F;
+  --bg-card: rgba(22, 14, 18, 0.85);
+  --bg-card-hover: rgba(34, 20, 26, 0.98);
+  --bg-glass: rgba(18, 11, 14, 0.82);
+  --bg-glass-nav: rgba(14, 8, 11, 0.92);
   --text-title: #FFFFFF;
-  --text-body: #C4BCD0;
-  --text-muted: #877C96;
-  --text-pink: #FF6590;
-  --pink-50: #1B1220;
-  --pink-100: #291A30;
-  --pink-200: #4A2845;
-  --pink-300: #883B68;
-  --pink-400: #D84A78;
-  --pink-500: #FF4D7E;
-  --pink-600: #FF6B95;
-  --pink-gradient: linear-gradient(135deg, #FF6B95 0%, #EE4475 100%);
-  --pink-glow: rgba(238, 68, 117, 0.45);
-  --border-delicate: rgba(247, 118, 153, 0.22);
-  --border-hover: rgba(255, 77, 126, 0.65);
+  --text-body: #C9BFC4;
+  --text-muted: #8F7D84;
+  --text-pink: #C93434;
+  --text-maroon: #C93434;
+  --pink-50: #1B0D11;
+  --pink-100: #2C131A;
+  --pink-200: #4F1D27;
+  --pink-300: #7A2434;
+  --pink-400: #B52B41;
+  --pink-500: #800000;
+  --pink-600: #C93434;
+  --pink-gradient: linear-gradient(135deg, #B52B41 0%, #800000 100%);
+  --pink-glow: rgba(128, 0, 0, 0.5);
+  --border-delicate: rgba(181, 43, 65, 0.22);
+  --border-hover: rgba(201, 52, 52, 0.65);
   --border-light: rgba(255, 255, 255, 0.12);
-  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.45);
-  --shadow-md: 0 16px 36px -10px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(238, 68, 117, 0.15);
-  --shadow-lg: 0 30px 65px -15px rgba(0, 0, 0, 0.8), 0 10px 30px rgba(238, 68, 117, 0.2);
-  --shadow-pill: 0 8px 24px rgba(238, 68, 117, 0.4);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 4px 16px rgba(128, 0, 0, 0.22);
+  --shadow-lg: 0 30px 65px -15px rgba(0, 0, 0, 0.85), 0 10px 30px rgba(128, 0, 0, 0.28);
+  --shadow-pill: 0 8px 24px rgba(128, 0, 0, 0.45);
 }
 
-[data-theme="sakura"] {
-  --pink-300: #F8A5C2;
-  --pink-400: #F78FB3;
-  --pink-500: #E66767;
-  --pink-gradient: linear-gradient(135deg, #F8A5C2 0%, #E66767 100%);
-  --bg-subtle: #FFF7F8;
+[data-theme="wine"] {
+  --pink-300: #C26B79;
+  --pink-400: #A83E4E;
+  --pink-500: #6B0014;
+  --pink-gradient: linear-gradient(135deg, #A83E4E 0%, #6B0014 100%);
+  --bg-subtle: #FCF2F4;
 }
 
-[data-theme="peach"] {
-  --pink-300: #FFB8A5;
-  --pink-400: #FF8F73;
-  --pink-500: #FA6342;
-  --pink-gradient: linear-gradient(135deg, #FFB8A5 0%, #FA6342 100%);
-  --bg-subtle: #FFF9F7;
+[data-theme="garnet"] {
+  --pink-300: #E0828A;
+  --pink-400: #BF434D;
+  --pink-500: #800000;
+  --pink-gradient: linear-gradient(135deg, #C93434 0%, #800000 100%);
+  --bg-subtle: #FAF1F2;
 }
 
 /* Reset & Base */
@@ -174,7 +188,7 @@ body {
   transform: translateX(-50%);
   width: 800px;
   height: 650px;
-  background: radial-gradient(circle, rgba(255, 182, 193, 0.45) 0%, rgba(255, 230, 237, 0.15) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(168, 40, 40, 0.22) 0%, rgba(243, 226, 226, 0.12) 60%, transparent 80%);
 }
 
 .ambient-orb-2 {
@@ -182,7 +196,7 @@ body {
   left: -200px;
   width: 750px;
   height: 750px;
-  background: radial-gradient(circle, rgba(254, 208, 220, 0.35) 0%, rgba(255, 240, 245, 0.1) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(128, 0, 0, 0.18) 0%, rgba(250, 242, 242, 0.1) 60%, transparent 80%);
   animation-delay: -7s;
 }
 
@@ -191,7 +205,7 @@ body {
   right: -120px;
   width: 850px;
   height: 850px;
-  background: radial-gradient(circle, rgba(251, 167, 188, 0.3) 0%, rgba(255, 235, 240, 0.1) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(190, 50, 50, 0.16) 0%, rgba(250, 242, 242, 0.08) 60%, transparent 80%);
   animation-delay: -14s;
 }
 
@@ -224,8 +238,8 @@ body {
 .custom-cursor-ring {
   width: 38px;
   height: 38px;
-  border: 1.5px solid rgba(238, 68, 117, 0.5);
-  background: rgba(255, 182, 193, 0.1);
+  border: 1.5px solid rgba(128, 0, 0, 0.5);
+  background: rgba(128, 0, 0, 0.08);
   transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, transform 0.05s linear;
 }
 
@@ -233,7 +247,7 @@ body {
   width: 60px;
   height: 60px;
   border-color: var(--pink-500);
-  background: rgba(238, 68, 117, 0.16);
+  background: rgba(128, 0, 0, 0.16);
 }
 
 /* Layout Container */
@@ -296,7 +310,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(238, 68, 117, 0.42);
+  box-shadow: 0 10px 28px rgba(128, 0, 0, 0.42);
 }
 
 .btn-primary:hover::before {
@@ -353,7 +367,7 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-full);
-  box-shadow: 0 10px 30px -10px rgba(238, 68, 117, 0.12), 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px -10px rgba(128, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .brand-logo {
@@ -514,7 +528,7 @@ h1, h2, h3, h4, h5, h6 {
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  background: radial-gradient(ellipse 70% 60% at 50% 55%, rgba(255, 230, 238, 0.7) 0%, rgba(255, 255, 255, 0) 80%);
+  background: radial-gradient(ellipse 70% 60% at 50% 55%, rgba(245, 226, 226, 0.65) 0%, rgba(255, 255, 255, 0) 80%);
 }
 
 /* Giant Typography: "RAKSHA SHETTY" across the upper-center */
@@ -553,7 +567,7 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(180deg, #FFFFFF 15%, rgba(255, 255, 255, 0.65) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 60px rgba(238, 68, 117, 0.25), 0 10px 30px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 0 60px rgba(128, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
 /* Centered Portrait Stage (Emerges from bottom over the font) */
@@ -595,7 +609,7 @@ h1, h2, h3, h4, h5, h6 {
   width: min(440px, 80vw);
   height: min(440px, 80vw);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(238, 68, 117, 0.24) 0%, rgba(254, 208, 220, 0.12) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(128, 0, 0, 0.28) 0%, rgba(168, 40, 40, 0.12) 40%, transparent 70%);
   filter: blur(50px);
   pointer-events: none;
   z-index: -1;
@@ -776,7 +790,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-cta-link-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(238, 68, 117, 0.42);
+  box-shadow: 0 10px 28px rgba(128, 0, 0, 0.42);
 }
 
 .hero-meta-block {
@@ -993,7 +1007,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .project-card:hover {
   border-color: var(--pink-300);
-  box-shadow: var(--shadow-lg), 0 0 35px rgba(251, 167, 188, 0.45);
+  box-shadow: var(--shadow-lg), 0 0 35px rgba(128, 0, 0, 0.22);
 }
 
 .card-glow {
@@ -1002,7 +1016,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 182, 193, 0.42) 0%, transparent 60%);
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(128, 0, 0, 0.16) 0%, transparent 60%);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -1019,7 +1033,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   height: 250px;
   overflow: hidden;
-  background: #FFF0F5;
+  background: var(--maroon-50);
 }
 
 .project-img {
@@ -1125,7 +1139,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: space-between;
   padding-top: 18px;
-  border-top: 1px solid rgba(247, 118, 153, 0.14);
+  border-top: 1px solid rgba(128, 0, 0, 0.14);
 }
 
 .view-details-link {
@@ -1190,7 +1204,7 @@ h1, h2, h3, h4, h5, h6 {
 .service-card:hover {
   transform: translateY(-6px);
   border-color: var(--pink-300);
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(254, 208, 220, 0.4);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(128, 0, 0, 0.22);
 }
 
 .service-num {
@@ -1420,8 +1434,8 @@ h1, h2, h3, h4, h5, h6 {
   background: #150F1B;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(20, 14, 28, 0.45), 0 0 25px rgba(238, 68, 117, 0.25);
-  border: 1px solid rgba(255, 182, 193, 0.25);
+  box-shadow: 0 25px 60px -15px rgba(20, 14, 28, 0.45), 0 0 25px rgba(128, 0, 0, 0.35);
+  border: 1px solid rgba(128, 0, 0, 0.35);
   will-change: transform, opacity;
 }
 
@@ -1493,7 +1507,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cli-line-output {
-  color: #FED0DC;
+  color: var(--maroon-200);
   font-size: 0.84rem;
 }
 
@@ -1559,14 +1573,14 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 50%;
   background: #FFF;
   border: 3px solid var(--pink-500);
-  box-shadow: 0 0 0 5px rgba(254, 208, 220, 0.5), var(--shadow-sm);
+  box-shadow: 0 0 0 5px rgba(128, 0, 0, 0.18), var(--shadow-sm);
   transition: transform 0.25s ease;
   z-index: 2;
 }
 
 .timeline-item:hover .timeline-node {
   transform: scale(1.25);
-  box-shadow: 0 0 0 8px rgba(254, 208, 220, 0.7), 0 0 25px rgba(251, 167, 188, 0.5);
+  box-shadow: 0 0 0 8px rgba(128, 0, 0, 0.25), 0 0 25px rgba(128, 0, 0, 0.35);
 }
 
 .timeline-card {
@@ -1659,7 +1673,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--border-delicate);
   border-radius: var(--radius-lg);
   padding: 56px;
-  box-shadow: var(--shadow-lg), 0 0 50px rgba(254, 208, 220, 0.4);
+  box-shadow: var(--shadow-lg), 0 0 50px rgba(128, 0, 0, 0.18);
   will-change: transform, opacity;
 }
 
@@ -1737,7 +1751,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   padding: 14px 18px;
   background: #FFF;
-  border: 1.5px solid rgba(247, 118, 153, 0.2);
+  border: 1.5px solid rgba(128, 0, 0, 0.18);
   border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: 0.95rem;
@@ -1749,7 +1763,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-input:focus,
 .form-textarea:focus {
   border-color: var(--pink-500);
-  box-shadow: 0 0 0 4px rgba(254, 208, 220, 0.45);
+  box-shadow: 0 0 0 4px rgba(128, 0, 0, 0.18);
 }
 
 .form-textarea {
@@ -1789,7 +1803,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 20px;
   max-width: 620px;
   width: 100%;
-  box-shadow: 0 25px 70px rgba(238, 68, 117, 0.25);
+  box-shadow: 0 25px 70px rgba(128, 0, 0, 0.25);
   overflow: hidden;
   transform: translateY(-20px) scale(0.96);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2057,7 +2071,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Footer */
 .site-footer {
   padding: 48px 0;
-  border-top: 1px solid rgba(247, 118, 153, 0.15);
+  border-top: 1px solid rgba(128, 0, 0, 0.15);
   background: var(--bg-subtle);
   position: relative;
   z-index: 2;
@@ -2180,7 +2194,7 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid var(--pink-200);
     border-radius: var(--radius-lg);
     padding: 24px;
-    box-shadow: 0 20px 40px rgba(238, 68, 117, 0.2);
+    box-shadow: 0 20px 40px rgba(128, 0, 0, 0.2);
     gap: 16px;
     z-index: 1000;
   }
