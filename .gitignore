@@ -1,0 +1,12 @@
+# OS & System
+.DS_Store
+Thumbs.db
+
+# IDE & Editor
+.vscode/
+.idea/
+
+# Python cache & logs
+__pycache__/
+*.pyc
+*.log

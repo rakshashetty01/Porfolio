@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raksha Shetty — Full-Stack Software Engineer &amp; Creative Architect</title>
+  <meta name="description" content="Portfolio of Raksha Shetty — Full-Stack Software Engineer crafting digital products that are clear, resilient, and conversion focused. Featuring WebGL 3D graphics and editorial animations.">
+  <meta name="keywords" content="Raksha Shetty, Software Engineer, Full Stack Developer, Creative Technologist, Three.js, WebGL, React, Next.js, Go, TypeScript, Bangalore">
+  <meta name="author" content="Raksha Shetty">
+  <meta property="og:title" content="Raksha Shetty — Portfolio">
+  <meta property="og:description" content="Crafting digital products that are clear, resilient, and conversion focused.">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20width=%2232%22%20height=%2232%22><circle cx=%2216%22 cy=%2216%22 r=%2215%22 fill=%22%23EE4475%22/><text x=%2216%22 y=%2222%22 font-size=%2214%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22white%22>RS</text></svg>">
+
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Glowing Magnetic Cursor -->
+  <div class="custom-cursor-dot" id="cursor-dot"></div>
+  <div class="custom-cursor-ring" id="cursor-ring"></div>
+
+  <!-- Three.js 3D WebGL Canvas Layer -->
+  <div id="webgl-canvas-container"></div>
+
+  <!-- Ambient Animated Mist Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Ambient Glow Orbs -->
+  <div class="ambient-mesh-glow ambient-orb-1"></div>
+  <div class="ambient-mesh-glow ambient-orb-2"></div>
+  <div class="ambient-mesh-glow ambient-orb-3"></div>
+
+  <!-- FLOATING MINIMALIST NAVIGATION BAR -->
+  <nav class="site-nav" id="main-nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#hero" class="brand-logo" id="brand-logo-link">
+          <div class="brand-badge">RS</div>
+          <span class="scramble-hover" data-text="Raksha Shetty">Raksha Shetty</span>
+        </a>
+
+        <ul class="nav-links" id="nav-links-menu">
+          <li><a href="#hero" class="nav-link active">Home</a></li>
+          <li><a href="#works" class="nav-link">Works</a></li>
+          <li><a href="#services" class="nav-link">Services</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#experience" class="nav-link">Experience</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <!-- Command Palette HUD Trigger (Cmd + K) -->
+          <button class="cmd-palette-btn" id="open-cmd-btn" title="Open Command Palette (Cmd + K)">
+            <span class="cmd-key">⌘K</span>
+            <span>Menu</span>
+          </button>
+
+          <!-- Audio Synthesizer Feedback Toggle -->
+          <button class="icon-btn magnetic-target" id="sound-toggle-btn" title="Toggle Interactive Audio" aria-label="Toggle sound effects">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          </button>
+
+          <!-- Atmosphere Palette Switcher -->
+          <button class="icon-btn magnetic-target" id="theme-toggle-btn" title="Cycle Atmosphere" aria-label="Cycle theme accent">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a7 7 0 0 0 0 14v6"></path>
+            </svg>
+          </button>
+
+          <!-- Let's Talk CTA -->
+          <a href="#contact" class="btn-primary magnetic-target" id="nav-cta-btn">
+            <span>Get in touch</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
+
+          <!-- Mobile Hamburger Toggle -->
+          <button class="icon-btn mobile-nav-toggle" id="mobile-menu-btn" title="Toggle Navigation Menu" aria-label="Open navigation menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       HERO SECTION — DYMAS ALFIN EDITORIAL STYLE
+       1. Giant Typography "RAKSHA SHETTY" animates in first!
+       2. Then the Portrait slides UP from bottom into full view!
+       3. Then the Role & Description reveal!
+       ========================================================================== -->
+  <section class="dymas-hero-section" id="hero">
+    <!-- Ethereal Mist Backdrop -->
+    <div class="hero-mist-backdrop"></div>
+
+    <!-- Status Pill -->
+    <div class="hero-floating-pill pill-status-top" id="hero-status-pill">
+      <span class="status-dot-pulse"></span>
+      <span class="scramble-hover" data-text="Available for high-impact projects & engineering roles">Available for high-impact projects &amp; engineering roles</span>
+    </div>
+
+    <!-- Giant Typography: "RAKSHA SHETTY" spanning across upper-center -->
+    <div class="hero-giant-typography-wrapper" id="hero-giant-text">
+      <div class="giant-text-single-line">RAKSHA SHETTY</div>
+    </div>
+
+    <!-- Centered Blended Portrait Stage (Slides UP from bottom into view) -->
+    <div class="hero-portrait-stage" id="hero-portrait-stage">
+      <div class="portrait-glow-halo"></div>
+      <img src="assets/raksha_portrait_cutout.png" alt="Raksha Shetty Portrait" class="hero-portrait-img" id="hero-portrait-photo">
+    </div>
+
+    <!-- Floating Badges Flanking Portrait -->
+    <div class="hero-floating-badge badge-left" id="hero-badge-left">
+      <div class="badge-icon-box">✦</div>
+      <div class="badge-content">
+        <span class="badge-title">Full-Stack Architect</span>
+        <span class="badge-sub">Distributed Systems &amp; WebGL</span>
+      </div>
+    </div>
+
+    <div class="hero-floating-badge badge-right" id="hero-badge-right">
+      <div class="badge-icon-box">⚡</div>
+      <div class="badge-content">
+        <span class="badge-title">Production Scale</span>
+        <span class="badge-sub">99.99% Uptime • 28+ Shipped</span>
+      </div>
+    </div>
+
+    <!-- Bottom Bar: Role info on left, Socials on right -->
+    <div class="hero-bottom-bar">
+      <div class="container">
+        <div class="hero-bottom-inner">
+          <!-- Bottom Left -->
+          <div class="hero-role-block" id="hero-role-block">
+            <h2 class="hero-role-title">Software Engineer &amp; Architect</h2>
+            <p class="hero-role-subtext">
+              crafting digital products that are clear, resilient, and conversion focused. Blending robust distributed systems with silky micro-animations.
+            </p>
+            <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+              <a href="#contact" class="hero-cta-link-btn magnetic-target" id="hero-collaborate-btn">
+                <span>Collaborate</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+              <button class="btn-secondary magnetic-target" id="open-resume-btn" style="padding: 11px 24px;">
+                <span>View CV / Resume</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom Right -->
+          <div class="hero-meta-block" id="hero-meta-block">
+            <div class="hero-social-list">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="hero-social-icon-btn magnetic-target" title="GitHub" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="hero-social-icon-btn magnetic-target" title="LinkedIn" aria-label="LinkedIn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="hero-social-icon-btn magnetic-target" title="Twitter / X" aria-label="Twitter">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+            </div>
+            <a href="#works" class="hero-scroll-cue" style="text-decoration:none;">
+              <span>Scroll to explore</span>
+              <span class="scroll-arrow-anim">↓</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       INFINITE TICKER MARQUEE
+       ========================================================================== -->
+  <div class="marquee-strip">
+    <div class="marquee-track">
+      <div class="marquee-item"><span class="marquee-star">✦</span> FULL-STACK ARCHITECTURE</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> WEBGL 3D SHADER PIPELINES</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> REACT 19 &amp; NEXT.JS 15</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> SILKY 60FPS MICRO-ANIMATIONS</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> GO &amp; NODE.JS BACKENDS</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> KUBERNETES &amp; DISTRIBUTED DATA</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> THREE.JS &amp; GENERATIVE AUDIO</div>
+      <!-- Duplicate for infinite loop -->
+      <div class="marquee-item"><span class="marquee-star">✦</span> FULL-STACK ARCHITECTURE</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> WEBGL 3D SHADER PIPELINES</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> REACT 19 &amp; NEXT.JS 15</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> SILKY 60FPS MICRO-ANIMATIONS</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> GO &amp; NODE.JS BACKENDS</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> KUBERNETES &amp; DISTRIBUTED DATA</div>
+      <div class="marquee-item"><span class="marquee-star">✦</span> THREE.JS &amp; GENERATIVE AUDIO</div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       WORKS SECTION (EDITORIAL PROJECT SHOWCASE)
+       Scroll Trigger: Giant Title animates in FIRST -> Cards/Photos slide UP visible
+       ========================================================================== -->
+  <section class="section-padding" id="works">
+    <div class="container">
+      <div class="section-head reveal-head">
+        <div class="section-eyebrow">Selected Works</div>
+        <h2 class="section-headline">Products Built with <span class="text-gradient">Precision &amp; Artistry</span></h2>
+        <p class="section-desc">
+          Click any project card to open complete architectural deep dives, engineering challenges, and live simulated telemetry.
+        </p>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="project-filters reveal-filters">
+        <button class="filter-btn active" data-filter="all">All Works (6)</button>
+        <button class="filter-btn" data-filter="fullstack">Full-Stack &amp; Cloud</button>
+        <button class="filter-btn" data-filter="ai">AI &amp; Machine Learning</button>
+        <button class="filter-btn" data-filter="fintech">FinTech &amp; Systems</button>
+        <button class="filter-btn" data-filter="creative">Frontend &amp; Creative</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="projects-grid" id="projects-container">
+
+        <!-- PROJECT 1: Syncflow AI -->
+        <div class="project-card reveal-card" data-category="fullstack" data-project-id="syncflow">
+          <div class="card-glow"></div>
+          <div class="project-image-box">
+            <span class="project-badge-tag">Cloud Infrastructure</span>
+            <span class="project-badge-featured">Featured</span>
+            <img src="assets/proj_cloudflow.jpg" alt="Syncflow AI Dashboard" class="project-img">
+          </div>
+          <div class="project-content">
+            <div class="project-meta-row">
+              <span>01 / DISTRIBUTED CLUSTERS</span>
+              <span>2025</span>
+            </div>
+            <h3 class="project-title scramble-hover" data-text="Syncflow AI Orchestrator">Syncflow AI Orchestrator</h3>
+            <p class="project-summary">
+              Enterprise cloud infrastructure control plane managing distributed Kubernetes microservices, real-time telemetry, and automated cluster healing.
+            </p>
+            <div class="project-tech-tags">
+              <span class="tech-tag">Next.js 15</span>
+              <span class="tech-tag">Go</span>
+              <span class="tech-tag">Kubernetes</span>
+              <span class="tech-tag">Kafka</span>
+            </div>
+            <div class="project-footer-actions">
+              <span class="view-details-link">
+                <span>Explore Architecture &amp; Demo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <div class="card-action-icon">↗</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJECT 2: Lumina AI 3D -->
+        <div class="project-card reveal-card" data-category="ai" data-project-id="lumina">
+          <div class="card-glow"></div>
+          <div class="project-image-box">
+            <span class="project-badge-tag">Generative 3D</span>
+            <span class="project-badge-featured">Award Winner</span>
+            <img src="assets/proj_neuroart.jpg" alt="Lumina AI 3D Studio" class="project-img">
+          </div>
+          <div class="project-content">
+            <div class="project-meta-row">
+              <span>02 / NEURAL MESH STUDIO</span>
+              <span>2025</span>
+            </div>
+            <h3 class="project-title scramble-hover" data-text="Lumina AI 3D Studio">Lumina AI 3D Studio</h3>
+            <p class="project-summary">
+              Web-based neural prompt synthesis engine generating interactive 3D procedural geometry, custom GLSL crystalline shaders, and real-time WebGL manipulation.
+            </p>
+            <div class="project-tech-tags">
+              <span class="tech-tag">Three.js</span>
+              <span class="tech-tag">React 19</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">GLSL</span>
+            </div>
+            <div class="project-footer-actions">
+              <span class="view-details-link">
+                <span>Explore Architecture &amp; Demo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <div class="card-action-icon">↗</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJECT 3: PulsePay Global -->
+        <div class="project-card reveal-card" data-category="fintech" data-project-id="pulsepay">
+          <div class="card-glow"></div>
+          <div class="project-image-box">
+            <span class="project-badge-tag">FinTech Core</span>
+            <img src="assets/proj_pulsepay.jpg" alt="PulsePay Core Engine" class="project-img">
+          </div>
+          <div class="project-content">
+            <div class="project-meta-row">
+              <span>03 / HIGH-VELOCITY LEDGER</span>
+              <span>2024</span>
+            </div>
+            <h3 class="project-title scramble-hover" data-text="PulsePay Core Engine">PulsePay Core Engine</h3>
+            <p class="project-summary">
+              Ultra-low-latency transaction settlement engine and real-time ledger supporting multi-currency conversion, fraud scoring, and instant webhooks.
+            </p>
+            <div class="project-tech-tags">
+              <span class="tech-tag">TypeScript</span>
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">Redis</span>
+              <span class="tech-tag">PostgreSQL</span>
+            </div>
+            <div class="project-footer-actions">
+              <span class="view-details-link">
+                <span>Explore Architecture &amp; Demo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <div class="card-action-icon">↗</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJECT 4: DevOrbit Collaborative -->
+        <div class="project-card reveal-card" data-category="fullstack" data-project-id="devorbit">
+          <div class="card-glow"></div>
+          <div class="project-image-box">
+            <span class="project-badge-tag">Developer Tools</span>
+            <img src="assets/proj_devorbit.jpg" alt="DevOrbit Collaborative IDE" class="project-img">
+          </div>
+          <div class="project-content">
+            <div class="project-meta-row">
+              <span>04 / REAL-TIME COLLABORATION</span>
+              <span>2024</span>
+            </div>
+            <h3 class="project-title scramble-hover" data-text="DevOrbit Collaborative IDE">DevOrbit Collaborative IDE</h3>
+            <p class="project-summary">
+              In-browser real-time code editor with CRDT-driven multi-cursor synchronization, ephemeral sandboxed Linux containers, and low-latency WebRTC channels.
+            </p>
+            <div class="project-tech-tags">
+              <span class="tech-tag">WebSockets</span>
+              <span class="tech-tag">Yjs CRDTs</span>
+              <span class="tech-tag">Rust</span>
+              <span class="tech-tag">WebAssembly</span>
+            </div>
+            <div class="project-footer-actions">
+              <span class="view-details-link">
+                <span>Explore Architecture &amp; Demo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <div class="card-action-icon">↗</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJECT 5: Aura BioTrack -->
+        <div class="project-card reveal-card" data-category="creative" data-project-id="aurabiotrack">
+          <div class="card-glow"></div>
+          <div class="project-image-box">
+            <span class="project-badge-tag">HealthTech &amp; IoT</span>
+            <img src="assets/proj_aurabiotrack.jpg" alt="Aura BioTrack Telemetry" class="project-img">
+          </div>
+          <div class="project-content">
+            <div class="project-meta-row">
+              <span>05 / SENSOR TELEMETRY</span>
+              <span>2024</span>
+            </div>
+            <h3 class="project-title scramble-hover" data-text="Aura BioTrack Telemetry">Aura BioTrack Telemetry</h3>
+            <p class="project-summary">
+              Next-generation health telemetry system ingesting high-frequency wearable sensor streams with interactive Canvas graphs and predictive recovery algorithms.
+            </p>
+            <div class="project-tech-tags">
+              <span class="tech-tag">Next.js</span>
+              <span class="tech-tag">TimescaleDB</span>
+              <span class="tech-tag">Canvas API</span>
+              <span class="tech-tag">Python</span>
+            </div>
+            <div class="project-footer-actions">
+              <span class="view-details-link">
+                <span>Explore Architecture &amp; Demo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <div class="card-action-icon">↗</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJECT 6: HyperSonic UI -->
+        <div class="project-card reveal-card" data-category="creative" data-project-id="hypersonic">
+          <div class="card-glow"></div>
+          <div class="project-image-box">
+            <span class="project-badge-tag">Design Systems</span>
+            <div style="width:100%; height:100%; background: linear-gradient(135deg, #FFFFFF 0%, #FFF0F5 100%); display:flex; align-items:center; justify-content:center; gap: 12px; padding: 20px;">
+              <div style="padding: 10px 22px; background:#EE4475; color:#fff; border-radius:30px; font-weight:700; font-size:0.85rem; box-shadow:0 6px 20px rgba(238,68,117,0.35);">Primary Pill</div>
+              <div style="padding: 10px 22px; background:#FFF; color:#14101A; border:1px solid #FED0DC; border-radius:30px; font-weight:700; font-size:0.85rem;">Glass Glow</div>
+            </div>
+          </div>
+          <div class="project-content">
+            <div class="project-meta-row">
+              <span>06 / COMPONENT ARCHITECTURE</span>
+              <span>2024</span>
+            </div>
+            <h3 class="project-title scramble-hover" data-text="HyperSonic UI Framework">HyperSonic UI Framework</h3>
+            <p class="project-summary">
+              Lightweight, zero-dependency component library prioritizing 60FPS spring animations, strict accessibility (WCAG AAA), and customizable design tokens.
+            </p>
+            <div class="project-tech-tags">
+              <span class="tech-tag">Vanilla JS</span>
+              <span class="tech-tag">CSS Houdini</span>
+              <span class="tech-tag">Web Components</span>
+            </div>
+            <div class="project-footer-actions">
+              <span class="view-details-link">
+                <span>Explore Architecture &amp; Demo</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
+              <div class="card-action-icon">↗</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SERVICES & CAPABILITIES
+       Scroll Trigger: Head animates in FIRST -> Service Cards slide UP visible
+       ========================================================================== -->
+  <section class="section-padding" id="services" style="background: var(--bg-subtle);">
+    <div class="container">
+      <div class="section-head reveal-head">
+        <div class="section-eyebrow">Capabilities</div>
+        <h2 class="section-headline">Engineering &amp; <span class="text-gradient">Design Expertise</span></h2>
+        <p class="section-desc">
+          Delivering end-to-end technical execution from initial system architecture to tactile frontend micro-interactions.
+        </p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card reveal-card">
+          <span class="service-num">01 / ARCHITECTURE</span>
+          <h3 class="service-title scramble-hover" data-text="Full-Stack Web Systems">Full-Stack Web Systems</h3>
+          <p class="service-desc">
+            Architecting scalable web applications using Next.js 15, React 19, TypeScript, and modern state machines with sub-second rendering.
+          </p>
+          <div class="service-tags">
+            <span class="tech-tag">React 19</span>
+            <span class="tech-tag">Next.js SSR</span>
+            <span class="tech-tag">TypeScript</span>
+          </div>
+        </div>
+
+        <div class="service-card reveal-card">
+          <span class="service-num">02 / INFRASTRUCTURE</span>
+          <h3 class="service-title scramble-hover" data-text="Cloud & Microservices">Cloud &amp; Microservices</h3>
+          <p class="service-desc">
+            Designing resilient backend APIs in Go and Node.js with Kubernetes container orchestration, Redis caching, and Kafka pipelines.
+          </p>
+          <div class="service-tags">
+            <span class="tech-tag">Go Microservices</span>
+            <span class="tech-tag">Kubernetes</span>
+            <span class="tech-tag">PostgreSQL</span>
+          </div>
+        </div>
+
+        <div class="service-card reveal-card">
+          <span class="service-num">03 / INTERACTION</span>
+          <h3 class="service-title scramble-hover" data-text="Creative UI & WebGL 3D">Creative UI &amp; WebGL 3D</h3>
+          <p class="service-desc">
+            Building 60FPS physics-based animations, canvas simulations, custom shaders, and interactive 3D viewports with Three.js.
+          </p>
+          <div class="service-tags">
+            <span class="tech-tag">Three.js</span>
+            <span class="tech-tag">Canvas 2D</span>
+            <span class="tech-tag">Web Audio API</span>
+          </div>
+        </div>
+
+        <div class="service-card reveal-card">
+          <span class="service-num">04 / OPTIMIZATION</span>
+          <h3 class="service-title scramble-hover" data-text="Performance & Scale">Performance &amp; Scale</h3>
+          <p class="service-desc">
+            Auditing Core Web Vitals, minimizing bundle footprints, tuning SQL execution plans, and ensuring 99.9% production SLAs.
+          </p>
+          <div class="service-tags">
+            <span class="tech-tag">Web Vitals</span>
+            <span class="tech-tag">SQL Tuning</span>
+            <span class="tech-tag">CI/CD Automation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ABOUT & INTERACTIVE TERMINAL CLI
+       Scroll Trigger: Title animates FIRST -> Cards & Terminal slide UP visible
+       ========================================================================== -->
+  <section class="section-padding" id="about">
+    <div class="container">
+      <div class="section-head reveal-head">
+        <div class="section-eyebrow">Philosophy &amp; CLI</div>
+        <h2 class="section-headline">Code That Scales. <span class="text-gradient">Interfaces That Sing.</span></h2>
+      </div>
+
+      <!-- Author Spotlight Banner Card -->
+      <div class="about-author-card reveal-card">
+        <div class="author-portrait-frame">
+          <img src="assets/raksha_portrait.jpg" alt="Raksha Shetty Portrait" class="author-portrait-photo">
+          <div class="author-live-badge">
+            <span class="status-dot-pulse"></span>
+            <span>Online • Bangalore, India</span>
+          </div>
+        </div>
+        <div class="author-info">
+          <div class="author-eyebrow">Creative Technologist &amp; Full-Stack Architect</div>
+          <h3 class="author-name">Raksha Shetty</h3>
+          <p class="author-statement">
+            "I engineer digital products where distributed cloud resilience directly powers ultra-responsive, 60fps micro-interactions."
+          </p>
+          <div class="author-metrics-row">
+            <div class="metric-pill">
+              <span class="metric-val">4+</span>
+              <span class="metric-lbl">Years Exp</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-val">28+</span>
+              <span class="metric-lbl">Shipped Systems</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-val">99.99%</span>
+              <span class="metric-lbl">Production SLA</span>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-val">100K+</span>
+              <span class="metric-lbl">Active Users</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card reveal-card">
+          <h3 class="about-card-title">Crafting With Precision &amp; Intent</h3>
+          <p class="about-text">
+            I am a full-stack engineer who thrives at the intersection of intricate distributed backends and hyper-polished client experiences. Over the past 4+ years, I have built systems serving hundreds of thousands of users without compromising on craft.
+          </p>
+          <p class="about-text">
+            My engineering philosophy centers on clarity, strict type safety, zero bloat, and sub-100ms response latencies. Every component, database query, and animation curve is a deliberate design decision.
+          </p>
+
+          <div class="philosophy-grid">
+            <div class="philosophy-item">
+              <span class="philosophy-icon">💎</span>
+              <h4 class="philosophy-name">Modern Clean Code</h4>
+              <p class="philosophy-desc">Modular, self-documenting architectures built to evolve seamlessly.</p>
+            </div>
+            <div class="philosophy-item">
+              <span class="philosophy-icon">🚀</span>
+              <h4 class="philosophy-name">Performance First</h4>
+              <p class="philosophy-desc">Sub-second loads, 60fps animations, and optimized cloud budgets.</p>
+            </div>
+            <div class="philosophy-item">
+              <span class="philosophy-icon">✨</span>
+              <h4 class="philosophy-name">Micro-Interactions</h4>
+              <p class="philosophy-desc">Tactile spring feedback and magnetic interactions users remember.</p>
+            </div>
+            <div class="philosophy-item">
+              <span class="philosophy-icon">🛡️</span>
+              <h4 class="philosophy-name">Reliability &amp; Scale</h4>
+              <p class="philosophy-desc">Zero-downtime deployments, resilient caching, and comprehensive test suites.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Terminal Simulator with Real Command Input -->
+        <div class="terminal-window reveal-card">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="terminal-filename">bash ~ raksha@cloud-node</div>
+            <div class="terminal-actions">
+              <button class="terminal-copy-btn" id="copy-code-btn" title="Copy snippet">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+          </div>
+          <div class="terminal-body" id="terminal-code-body">
+            <div class="cli-history" id="cli-history-output">
+              <div class="cli-line-output" style="color: #A5B4FC;">⚡ Raksha Shetty Terminal v2.4 (Active Node: Bangalore-IST)</div>
+              <div class="cli-line-output" style="color: #8A8094;">Type <span style="color:#FF7B90; font-weight:700;">'help'</span> to see available commands or try <span style="color:#FF7B90; font-weight:700;">'skills'</span>, <span style="color:#FF7B90; font-weight:700;">'hire'</span>, <span style="color:#FF7B90; font-weight:700;">'matrix'</span>.</div>
+            </div>
+            <div class="cli-input-row">
+              <span class="cli-prompt-symbol">rs:~$</span>
+              <input type="text" id="cli-input-field" class="cli-input-field" placeholder="type a command..." autocomplete="off" spellcheck="false">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       EXPERIENCE TIMELINE
+       Scroll Trigger: Section Head animates FIRST -> Timeline cards slide UP
+       ========================================================================== -->
+  <section class="section-padding" id="experience" style="background: var(--bg-subtle);">
+    <div class="container">
+      <div class="section-head reveal-head">
+        <div class="section-eyebrow">Career Trajectory</div>
+        <h2 class="section-headline">Experience &amp; <span class="text-gradient">Milestones</span></h2>
+      </div>
+
+      <div class="timeline-container">
+        <!-- ITEM 1 -->
+        <div class="timeline-item reveal-card">
+          <div class="timeline-node"></div>
+          <div class="timeline-card">
+            <div class="timeline-meta">
+              <h3 class="timeline-role">Senior Full-Stack Engineer</h3>
+              <span class="timeline-period">2024 — Present</span>
+            </div>
+            <div class="timeline-company">CloudScale Labs • Bangalore / Remote</div>
+            <p class="timeline-desc">
+              Spearheading core architectural initiatives for distributed cloud deployment workflows and developer infrastructure services.
+            </p>
+            <ul class="timeline-highlights">
+              <li>Architected and launched microservice mesh reducing multi-region deployment latency by 42%.</li>
+              <li>Engineered zero-downtime database migration tooling supporting 10M+ daily events.</li>
+              <li>Mentored team of 6 engineers on TypeScript strict types and modern web performance best practices.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ITEM 2 -->
+        <div class="timeline-item reveal-card">
+          <div class="timeline-node"></div>
+          <div class="timeline-card">
+            <div class="timeline-meta">
+              <h3 class="timeline-role">Full-Stack Software Developer</h3>
+              <span class="timeline-period">2022 — 2024</span>
+            </div>
+            <div class="timeline-company">Vanguard Interactive • Bangalore</div>
+            <p class="timeline-desc">
+              Built dynamic customer-facing web applications, payment integrations, and administrative dashboards for high-growth startups.
+            </p>
+            <ul class="timeline-highlights">
+              <li>Refactored legacy single-page application into Next.js SSR architecture, boosting SEO score from 58 to 99.</li>
+              <li>Implemented real-time WebSocket dashboard for transaction monitoring processing $3M+ monthly volume.</li>
+              <li>Authored internal UI library adopted across 4 major flagship client products.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ITEM 3 -->
+        <div class="timeline-item reveal-card">
+          <div class="timeline-node"></div>
+          <div class="timeline-card">
+            <div class="timeline-meta">
+              <h3 class="timeline-role">Bachelor of Engineering in Computer Science</h3>
+              <span class="timeline-period">2018 — 2022</span>
+            </div>
+            <div class="timeline-company">Visvesvaraya Technological University (VTU)</div>
+            <p class="timeline-desc">
+              Graduated with First Class with Distinction. Focused on Data Structures, Algorithms, Distributed Systems, and Web Technologies.
+            </p>
+            <ul class="timeline-highlights">
+              <li>Led university coding club and organized regional hackathons with 400+ participants.</li>
+              <li>Final year capstone: Peer-to-Peer Encrypted File Streaming Protocol using WebRTC.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CONTACT SECTION
+       Scroll Trigger: Head animates FIRST -> Form & Info slide UP visible
+       ========================================================================== -->
+  <section class="section-padding" id="contact">
+    <div class="container">
+      <div class="section-head reveal-head">
+        <div class="section-eyebrow">Get In Touch</div>
+        <h2 class="section-headline">Have a Project in Mind? <span class="text-gradient">Let's Collaborate.</span></h2>
+        <p class="section-desc">
+          I am always open to discussing new opportunities, high-throughput architectures, or joining visionary teams.
+        </p>
+      </div>
+
+      <div class="contact-box-grid reveal-card">
+        <div class="contact-info-col">
+          <div>
+            <h3 class="contact-heading">Say Hello 👋</h3>
+            <p class="contact-text">
+              Whether you need a dedicated full-stack engineer, an architecture consultation, or want to build an award-winning web experience, reach out directly.
+            </p>
+
+            <div class="contact-quick-items">
+              <!-- Clickable Email with Copy Feature -->
+              <div class="quick-contact-pill magnetic-target" id="copy-email-btn" title="Click to copy email">
+                <div class="quick-icon-wrap">📧</div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Email (Click to copy)</div>
+                  <div>raksha.shetty.dev@gmail.com</div>
+                </div>
+              </div>
+
+              <!-- Location & Time -->
+              <div class="quick-contact-pill">
+                <div class="quick-icon-wrap">📍</div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Location</div>
+                  <div id="live-ist-clock">Bangalore, India • 01:30 PM IST</div>
+                </div>
+              </div>
+
+              <!-- Availability Status -->
+              <div class="quick-contact-pill">
+                <div class="quick-icon-wrap">💼</div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Status</div>
+                  <div style="color: #10B981; font-weight:700;">● Available for Select Opportunities</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <form class="contact-form" id="portfolio-contact-form">
+          <div class="form-group">
+            <label for="contact-name" class="form-label">Your Name</label>
+            <input type="text" id="contact-name" class="form-input" placeholder="e.g. Sarah Jenkins" required>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-email" class="form-label">Email Address</label>
+            <input type="email" id="contact-email" class="form-input" placeholder="sarah@company.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-project-type" class="form-label">Project Interest / Role</label>
+            <select id="contact-project-type" class="form-input" style="background-color: #fff; cursor: pointer;">
+              <option value="fulltime">Full-Time Software Engineering Opportunity</option>
+              <option value="consulting">High-Impact Technical Consulting</option>
+              <option value="web-app">Custom Web Application Development</option>
+              <option value="chat">Technical Networking &amp; Coffee</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-message" class="form-label">Your Message</label>
+            <textarea id="contact-message" class="form-textarea" placeholder="Tell me about your idea, timeline, or scope..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary magnetic-target" id="submit-form-btn" style="width: 100%; border: none; padding: 14px;">
+            <span>Send Direct Message</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       COMMAND PALETTE HUD MODAL (⌘K)
+       ========================================================================== -->
+  <div class="cmd-palette-backdrop" id="cmd-palette">
+    <div class="cmd-palette-box">
+      <div class="cmd-search-input-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EE4475" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="cmd-search-input" class="cmd-search-input" placeholder="Type a destination or action (e.g. 'works', 'contact', 'resume', 'sound')...">
+      </div>
+      <div class="cmd-results-list" id="cmd-results">
+        <div class="cmd-item" data-action="goto" data-target="#works">
+          <div class="cmd-item-left"><span class="cmd-item-icon">🚀</span> <span>View Selected Works</span></div>
+          <span class="cmd-item-badge">#works</span>
+        </div>
+        <div class="cmd-item" data-action="goto" data-target="#services">
+          <div class="cmd-item-left"><span class="cmd-item-icon">⚡</span> <span>Explore Technical Services</span></div>
+          <span class="cmd-item-badge">#services</span>
+        </div>
+        <div class="cmd-item" data-action="goto" data-target="#about">
+          <div class="cmd-item-left"><span class="cmd-item-icon">💻</span> <span>Open Interactive CLI Terminal</span></div>
+          <span class="cmd-item-badge">#about</span>
+        </div>
+        <div class="cmd-item" data-action="goto" data-target="#contact">
+          <div class="cmd-item-left"><span class="cmd-item-icon">📬</span> <span>Contact Raksha Directly</span></div>
+          <span class="cmd-item-badge">#contact</span>
+        </div>
+        <div class="cmd-item" data-action="resume">
+          <div class="cmd-item-left"><span class="cmd-item-icon">📄</span> <span>View &amp; Download Resume</span></div>
+          <span class="cmd-item-badge">PDF</span>
+        </div>
+        <div class="cmd-item" data-action="theme">
+          <div class="cmd-item-left"><span class="cmd-item-icon">🎨</span> <span>Cycle Theme (Obsidian Dark / Pearl White / Sakura)</span></div>
+          <span class="cmd-item-badge">Theme</span>
+        </div>
+        <div class="cmd-item" data-action="sound">
+          <div class="cmd-item-left"><span class="cmd-item-icon">🔊</span> <span>Toggle Interactive Web Audio</span></div>
+          <span class="cmd-item-badge">Audio</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       PROJECT DETAIL & ARCHITECTURE MODAL
+       ========================================================================== -->
+  <div class="project-modal-backdrop" id="project-modal">
+    <div class="project-modal-container">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">✕</button>
+      <div class="modal-hero-image-wrap">
+        <img src="assets/proj_cloudflow.jpg" alt="Project Preview" class="modal-hero-img" id="modal-img">
+      </div>
+      <div class="modal-body">
+        <h2 class="modal-project-title" id="modal-title">Syncflow AI Orchestrator</h2>
+        <div class="modal-project-tagline" id="modal-tagline">Distributed Cluster Orchestration &amp; Intelligent Scaling</div>
+
+        <div class="modal-specs-grid" id="modal-specs">
+          <!-- Injected via JavaScript -->
+        </div>
+
+        <h4 class="modal-section-title">The Engineering Challenge &amp; Solution</h4>
+        <p class="modal-text" id="modal-desc">
+          Syncflow was built to eliminate the fragile complexity of managing heterogeneous cloud clusters across multi-region environments.
+        </p>
+
+        <h4 class="modal-section-title">Key Architectural Features</h4>
+        <ul class="timeline-highlights" id="modal-features" style="margin-top: 10px;">
+          <!-- Injected via JavaScript -->
+        </ul>
+
+        <div class="modal-actions-bar">
+          <button class="btn-primary" id="modal-live-demo-btn">
+            <span>Simulate Live Demo</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </button>
+          <button class="btn-secondary" id="modal-code-link-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>
+            </svg>
+            <span>View Architecture Docs</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       RESUME MODAL
+       ========================================================================== -->
+  <div class="project-modal-backdrop" id="resume-modal">
+    <div class="project-modal-container resume-modal-container">
+      <button class="modal-close-btn" id="resume-close-btn" aria-label="Close resume">✕</button>
+      <div class="resume-header">
+        <div>
+          <h2 style="font-size: 1.8rem; margin-bottom: 4px;">Raksha Shetty</h2>
+          <div style="color: var(--pink-600); font-weight: 600;">Senior Full-Stack Software Engineer &amp; Architect</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">raksha.shetty.dev@gmail.com • Bangalore, India</div>
+        </div>
+        <button class="btn-primary" id="download-resume-pdf-btn">
+          <span>Download PDF</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div>
+          <h4 style="color: var(--pink-600); font-size: 1rem; border-bottom: 1px solid var(--pink-100); padding-bottom: 4px; margin-bottom: 8px;">PROFESSIONAL SUMMARY</h4>
+          <p style="font-size: 0.9rem; line-height: 1.6; color: var(--text-body);">
+            Results-driven Full-Stack Software Engineer with 4+ years of hands-on experience designing, scaling, and maintaining distributed web applications, cloud-native services, and high-performance interactive client interfaces. Proven track record of reducing latency, optimizing infrastructure budgets, and crafting award-winning digital products.
+          </p>
+        </div>
+
+        <div>
+          <h4 style="color: var(--pink-600); font-size: 1rem; border-bottom: 1px solid var(--pink-100); padding-bottom: 4px; margin-bottom: 8px;">TECHNICAL EXPERTISE</h4>
+          <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-body);">
+            <strong>Frontend:</strong> React 19, Next.js 15, TypeScript, WebGL/Three.js, Vanilla CSS3, Redux Toolkit, Web Components.<br>
+            <strong>Backend:</strong> Node.js, Go (Golang), Python FastAPI, Express, REST APIs, GraphQL, gRPC.<br>
+            <strong>Databases &amp; Queues:</strong> PostgreSQL, Redis, MongoDB, TimescaleDB, Prisma ORM, Kafka, RabbitMQ.<br>
+            <strong>DevOps &amp; Cloud:</strong> Docker, Kubernetes, AWS (S3, CloudFront, ECS), CI/CD (GitHub Actions), Vercel.
+          </p>
+        </div>
+
+        <div>
+          <h4 style="color: var(--pink-600); font-size: 1rem; border-bottom: 1px solid var(--pink-100); padding-bottom: 4px; margin-bottom: 8px;">EDUCATION &amp; CERTIFICATIONS</h4>
+          <p style="font-size: 0.88rem; color: var(--text-body); line-height: 1.6;">
+            <strong>Bachelor of Engineering in Computer Science &amp; Engineering</strong> — Visvesvaraya Technological University (VTU), First Class Distinction.<br>
+            <strong>AWS Certified Solutions Architect</strong> (Associate) • Certified Kubernetes Application Developer (CKAD).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-notification" id="toast-notify">
+    <span class="toast-icon">✨</span>
+    <span id="toast-message">Message sent successfully!</span>
+  </div>
+
+  <!-- Local Libraries: GSAP, ScrollTrigger, and Three.js -->
+  <script src="assets/gsap.min.js"></script>
+  <script src="assets/ScrollTrigger.min.js"></script>
+  <script src="assets/three.min.js"></script>
+
+  <!-- Main JavaScript Logic -->
+  <script src="main.js"></script>
+</body>
+</html>
