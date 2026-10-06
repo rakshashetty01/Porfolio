@@ -73,33 +73,128 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     CUSTOM MAGNETIC CURSOR
+     CUSTOM FLOATING BUTTERFLY CURSOR FOLLOWER WITH HOME-PERCH POSTURE
      ========================================================================== */
-  const cursorDot = document.getElementById('cursor-dot');
-  const cursorRing = document.getElementById('cursor-ring');
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
-  let ringX = mouseX;
-  let ringY = mouseY;
+  const butterflyFollower = document.getElementById('butterfly-follower');
   const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+  function getButterflyHomePosition() {
+    const shettyWord = document.querySelector('#hero-word-solid') || document.querySelector('.hero-word-solid');
+    if (shettyWord) {
+      const rect = shettyWord.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        return {
+          x: rect.right + 26,
+          y: rect.top + (rect.height * 0.35)
+        };
+      }
+    }
+    return {
+      x: window.innerWidth * 0.84,
+      y: Math.min(260, window.innerHeight * 0.32)
+    };
+  }
+
   if (isTouch) {
-    if (cursorDot) cursorDot.style.display = 'none';
-    if (cursorRing) cursorRing.style.display = 'none';
+    if (butterflyFollower) butterflyFollower.style.display = 'none';
   } else {
+    let isMouseOnScreen = false;
+    const initialHome = getButterflyHomePosition();
+    let mouseX = initialHome.x;
+    let mouseY = initialHome.y;
+    let followerX = initialHome.x;
+    let followerY = initialHome.y;
+    let currentAngle = 15;
+    let targetAngle = 15;
+
+    if (butterflyFollower) {
+      butterflyFollower.classList.add('is-perched');
+      butterflyFollower.style.transform = `translate3d(${followerX.toFixed(2)}px, ${followerY.toFixed(2)}px, 0) translate(-50%, -50%) rotate(15deg)`;
+    }
+
+    // Pointer activity listeners
     window.addEventListener('mousemove', (e) => {
+      isMouseOnScreen = true;
       mouseX = e.clientX;
       mouseY = e.clientY;
-      if (cursorDot) cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
     });
 
-    function renderCursor() {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-      if (cursorRing) cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
-      requestAnimationFrame(renderCursor);
+    window.addEventListener('mouseenter', (e) => {
+      isMouseOnScreen = true;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      isMouseOnScreen = false;
+    });
+
+    window.addEventListener('mouseout', (e) => {
+      if (!e.relatedTarget && !e.toElement) {
+        isMouseOnScreen = false;
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      isMouseOnScreen = false;
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isMouseOnScreen = false;
+      }
+    });
+
+    function renderButterfly() {
+      const homePos = getButterflyHomePosition();
+      const targetX = isMouseOnScreen ? mouseX : homePos.x;
+      const targetY = isMouseOnScreen ? mouseY : homePos.y;
+
+      // Smooth organic gliding lag
+      const dx = targetX - followerX;
+      const dy = targetY - followerY;
+      const dist = Math.hypot(dx, dy);
+
+      // Smooth lerp speed: graceful glide towards pointer (0.09) or home perch (0.065)
+      const lerpRate = isMouseOnScreen ? 0.09 : 0.065;
+      followerX += dx * lerpRate;
+      followerY += dy * lerpRate;
+
+      if (!isMouseOnScreen) {
+        if (dist < 12) {
+          // Perched and resting next to the name
+          butterflyFollower?.classList.add('is-perched');
+          targetAngle = 14 + Math.sin(Date.now() * 0.002) * 5;
+        } else {
+          // Gliding back towards the name
+          butterflyFollower?.classList.remove('is-perched');
+          targetAngle = (Math.atan2(dy, dx) * 180 / Math.PI) + 90;
+        }
+      } else {
+        // In flight following cursor
+        butterflyFollower?.classList.remove('is-perched');
+        if (dist > 2.0) {
+          // Face travel direction
+          targetAngle = (Math.atan2(dy, dx) * 180 / Math.PI) + 90;
+        } else {
+          // Subtle idle floating tilt
+          targetAngle = Math.sin(Date.now() * 0.0025) * 8;
+        }
+      }
+
+      // Smooth interpolation of rotation angle
+      let diff = (targetAngle - currentAngle) % 360;
+      if (diff < -180) diff += 360;
+      if (diff > 180) diff -= 360;
+      currentAngle += diff * 0.085;
+
+      if (butterflyFollower) {
+        butterflyFollower.style.transform = `translate3d(${followerX.toFixed(2)}px, ${followerY.toFixed(2)}px, 0) translate(-50%, -50%) rotate(${currentAngle.toFixed(1)}deg)`;
+      }
+
+      requestAnimationFrame(renderButterfly);
     }
-    requestAnimationFrame(renderCursor);
+    requestAnimationFrame(renderButterfly);
 
     const interactiveElements = document.querySelectorAll(
       'a, button, .project-card, .service-card, .filter-btn, .quick-contact-pill, input, textarea, select'
@@ -208,12 +303,91 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Initial Hero Entrance Sequence
     const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    // Step 1: The giant font ("RAKSHA" outline + "SHETTY" solid) comes in FIRST
-    heroTl.fromTo(
-      ['.hero-word-outline', '.hero-word-solid'],
-      { y: 55, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.15, stagger: 0.12, ease: 'power3.out' }
-    );
+    // Step 1: High-impact 3D Kinetic Character Cascade for "RAKSHA SHETTY"
+    const rakshaChars = document.querySelectorAll('#hero-word-outline .hero-char');
+    const shettyChars = document.querySelectorAll('#hero-word-solid .hero-char');
+    const allHeroChars = document.querySelectorAll('.hero-giant-typography-wrapper .hero-char');
+
+    if (allHeroChars.length > 0) {
+      gsap.set(allHeroChars, {
+        transformOrigin: '50% 100% -30px',
+        backfaceVisibility: 'hidden'
+      });
+
+      // RAKSHA (Outline letters) surge upward with 3D rotation and spring settle
+      heroTl.fromTo(
+        rakshaChars,
+        {
+          y: 95,
+          opacity: 0,
+          scale: 0.72,
+          rotateX: -65,
+          rotateZ: (i) => (i % 2 === 0 ? -4 : 4),
+          filter: 'blur(6px)'
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotateX: 0,
+          rotateZ: 0,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          stagger: 0.045,
+          ease: 'power4.out'
+        }
+      );
+
+      // SHETTY (Solid maroon letters) follow with punchy kinetic snap
+      heroTl.fromTo(
+        shettyChars,
+        {
+          y: 95,
+          opacity: 0,
+          scale: 0.72,
+          rotateX: -65,
+          rotateZ: (i) => (i % 2 === 0 ? 4 : -4),
+          filter: 'blur(6px)'
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          rotateX: 0,
+          rotateZ: 0,
+          filter: 'blur(0px)',
+          duration: 1.2,
+          stagger: 0.045,
+          ease: 'power4.out',
+          onComplete: () => {
+            initHeroTypographyFloating(allHeroChars);
+          }
+        },
+        '-=1.0'
+      );
+
+      // Shimmer sweep beam across typography as they settle
+      heroTl.fromTo(
+        '#hero-type-shimmer',
+        { left: '-25%', opacity: 0 },
+        {
+          left: '125%',
+          opacity: 0.8,
+          duration: 1.15,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            gsap.set('#hero-type-shimmer', { opacity: 0 });
+          }
+        },
+        '-=0.7'
+      );
+    } else {
+      heroTl.fromTo(
+        ['.hero-word-outline', '.hero-word-solid'],
+        { y: 55, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.15, stagger: 0.12, ease: 'power3.out' }
+      );
+    }
 
     // Step 2: Then the portrait photo slides UP from bottom into visibility
     heroTl.fromTo(
@@ -263,90 +437,393 @@ document.addEventListener('DOMContentLoaded', () => {
       '-=0.7'
     );
 
-    // 2. Hero Scroll Parallax (Applied to outer containers, eliminating tween collision)
+    // Step 4b: Standing black dress avatar pops up smoothly above the location pill
+    const heroStandingAvatar = document.querySelector('#hero-standing-avatar');
+    if (heroStandingAvatar) {
+      heroTl.fromTo(
+        heroStandingAvatar,
+        { y: 55, scale: 0.35, autoAlpha: 0, transformOrigin: 'bottom center' },
+        {
+          y: 0,
+          scale: 1,
+          autoAlpha: 1,
+          duration: 0.85,
+          ease: 'back.out(2.2)',
+          onComplete: () => {
+            gsap.to(heroStandingAvatar, {
+              y: -8,
+              duration: 2.8,
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut'
+            });
+          }
+        },
+        '-=0.45'
+      );
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  PREMIUM SCROLL ENGINE — WORLD-CLASS CINEMATIC ANIMATIONS
+    // ═══════════════════════════════════════════════════════════════
     if (typeof ScrollTrigger !== 'undefined') {
+
+      // ── 1. HERO — Multi-layer depth parallax ──────────────────────
       gsap.to('#hero-giant-text', {
-        y: -90,
-        opacity: 0.35,
-        scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1
-        }
+        y: -140, opacity: 0.15, scale: 0.93,
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.8 }
       });
-
       gsap.to('#hero-portrait-stage', {
-        y: -50,
-        scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1
-        }
+        y: -70,
+        scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
+      });
+      gsap.to('.marquee-strip', {
+        opacity: 0.4, y: -20,
+        scrollTrigger: { trigger: '#hero', start: 'bottom 80%', end: 'bottom top', scrub: 1 }
       });
 
-      // 3. EVERY SECTION SCROLL-DRIVEN SEQUENCE:
+      // ── 2. SECTION ENTRANCE ENGINE ────────────────────────────────
       const sections = ['#works', '#services', '#skills', '#about', '#experience', '#education', '#contact'];
 
       sections.forEach((secId) => {
         const section = document.querySelector(secId);
         if (!section) return;
 
-        const head = section.querySelector('.reveal-head');
-        const cards = section.querySelectorAll('.reveal-card');
+        const head     = section.querySelector('.reveal-head');
+        const eyebrow  = head?.querySelector('.section-eyebrow');
+        const headline = head?.querySelector('.section-headline');
+        const desc     = head?.querySelector('.section-desc');
+        const filters  = section.querySelector('.reveal-filters');
+        const cards    = section.querySelectorAll('.reveal-card');
 
-        const secTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: 'top 78%',
-            toggleActions: 'play none none none'
-          },
-          defaults: { ease: 'power3.out' }
+        // ─ Eyebrow: scale + fade from tiny
+        if (eyebrow) {
+          gsap.fromTo(eyebrow,
+            { autoAlpha: 0, scale: 0.75, y: 10 },
+            { autoAlpha: 1, scale: 1, y: 0, duration: 0.55, ease: 'back.out(2.5)',
+              scrollTrigger: { trigger: head, start: 'top 90%', once: true } }
+          );
+        }
+
+        // ─ Headline: 3D flip up — cinematic
+        if (headline) {
+          gsap.fromTo(headline,
+            { autoAlpha: 0, y: 70, rotateX: 15, transformOrigin: '50% 100%' },
+            { autoAlpha: 1, y: 0, rotateX: 0, duration: 1.0, ease: 'power4.out', delay: 0.12,
+              scrollTrigger: { trigger: head, start: 'top 90%', once: true } }
+          );
+        }
+
+        // ─ Desc: graceful fade up
+        if (desc) {
+          gsap.fromTo(desc,
+            { autoAlpha: 0, y: 30 },
+            { autoAlpha: 1, y: 0, duration: 0.75, ease: 'power3.out', delay: 0.28,
+              scrollTrigger: { trigger: head, start: 'top 90%', once: true } }
+          );
+        }
+
+        // ─ Filter buttons: cascade left-to-right
+        if (filters) {
+          gsap.fromTo(filters.querySelectorAll('button, .filter-btn'),
+            { autoAlpha: 0, x: -25, scale: 0.92 },
+            { autoAlpha: 1, x: 0, scale: 1, duration: 0.4, ease: 'power2.out',
+              stagger: { each: 0.07, from: 'start' },
+              scrollTrigger: { trigger: filters, start: 'top 93%', once: true } }
+          );
+        }
+
+        // ─ Cards: alternate sides + rise with 3D tilt
+        cards.forEach((card, i) => {
+          const dir = i % 2 === 0 ? -50 : 50;
+          const rot = i % 2 === 0 ? -4 : 4;
+          gsap.fromTo(card,
+            { autoAlpha: 0, y: 80, x: dir, scale: 0.93, rotateY: rot },
+            {
+              autoAlpha: 1, y: 0, x: 0, scale: 1, rotateY: 0,
+              duration: 0.95, ease: 'power3.out', clearProps: 'transform',
+              scrollTrigger: { trigger: card, start: 'top 93%', once: true }
+            }
+          );
         });
-
-        // Step 1: Font/Headline animates in FIRST
-        if (head) {
-          secTl.fromTo(
-            head,
-            { y: 60, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.9 }
-          );
-        }
-
-        // Step 2: Photos / Cards slide UP into visibility with transform cleared on finish
-        if (cards && cards.length > 0) {
-          secTl.fromTo(
-            cards,
-            { y: 110, opacity: 0, scale: 0.93 },
-            { y: 0, opacity: 1, scale: 1, duration: 1.0, stagger: 0.14, clearProps: 'transform' },
-            '-=0.5' // Photo/cards rise up as font settles
-          );
-        }
       });
 
-      // 4. SKILL PROGRESS BARS REVEAL
+      // ── 3. SKILL BARS — scrub fill as you scroll ──────────────────
       const skillsSection = document.querySelector('#skills');
       if (skillsSection) {
-        const skillFills = skillsSection.querySelectorAll('.skill-meter-fill');
-        if (skillFills.length > 0) {
-          gsap.from(skillFills, {
-            width: '0%',
-            duration: 1.3,
-            ease: 'power2.out',
-            stagger: 0.08,
-            scrollTrigger: {
-              trigger: '#skills',
-              start: 'top 75%',
-              toggleActions: 'play none none none'
-            }
-          });
-        }
+        skillsSection.querySelectorAll('.skill-meter-fill').forEach(fill => {
+          const targetW = fill.style.width || '80%';
+          gsap.fromTo(fill,
+            { width: '0%' },
+            { width: targetW, duration: 1.5, ease: 'power3.out',
+              scrollTrigger: { trigger: fill, start: 'top 88%', once: true } }
+          );
+        });
+
+        // Skill/competency tags: burst pop in
+        gsap.from(skillsSection.querySelectorAll('.skill-tag, .competency-tag, .skill-item'),
+          { autoAlpha: 0, scale: 0.7, y: 20, duration: 0.35, ease: 'back.out(2)',
+            stagger: { each: 0.03, from: 'random' },
+            scrollTrigger: { trigger: skillsSection, start: 'top 80%', once: true } }
+        );
       }
+
+      // ── 4. TIMELINE CARDS — sequential slide from left ────────────
+      document.querySelectorAll('.timeline-card').forEach((card, i) => {
+        gsap.fromTo(card,
+          { autoAlpha: 0, x: -60, y: 20 },
+          { autoAlpha: 1, x: 0, y: 0, duration: 0.8, ease: 'power3.out',
+            delay: i * 0.08,
+            scrollTrigger: { trigger: card, start: 'top 92%', once: true } }
+        );
+      });
+
+      // ── 5. SERVICE CARDS — fan + rotate settle ────────────────────
+      document.querySelectorAll('.service-card').forEach((card, i) => {
+        gsap.fromTo(card,
+          { autoAlpha: 0, y: 60, scale: 0.88, rotateZ: i % 2 === 0 ? -2 : 2 },
+          { autoAlpha: 1, y: 0, scale: 1, rotateZ: 0,
+            duration: 0.8, ease: 'back.out(1.6)',
+            scrollTrigger: { trigger: card, start: 'top 93%', once: true } }
+        );
+      });
+
+      // ── 6. CONTACT — split from both sides ────────────────────────
+      const contactSection = document.querySelector('#contact');
+      if (contactSection) {
+        const cols = contactSection.querySelectorAll('[class*="col"], .contact-image-col');
+        cols.forEach((col, i) => {
+          gsap.fromTo(col,
+            { autoAlpha: 0, x: i === 0 ? -80 : 80, y: 20 },
+            { autoAlpha: 1, x: 0, y: 0, duration: 1.1, ease: 'power3.out',
+              scrollTrigger: { trigger: contactSection, start: 'top 85%', once: true } }
+          );
+        });
+      }
+
+      // ── 7. FLOATING AVATARS & ILLUSTRATIONS — cinematic entrances & idle loops ──
+      // Works featured avatar — slide in from right with smooth spring settle & idle float
+      const worksFeaturedWrap = document.querySelector('#works-featured-avatar-wrap');
+      if (worksFeaturedWrap) {
+        gsap.fromTo(worksFeaturedWrap,
+          { autoAlpha: 0, x: 120, y: 20, scale: 0.85 },
+          {
+            autoAlpha: 1, x: 0, y: 0, scale: 1,
+            duration: 1.3, ease: 'power4.out',
+            scrollTrigger: { trigger: '#works', start: 'top 82%', once: true },
+            onComplete: () => {
+              gsap.to('#works-featured-avatar', {
+                y: -10, duration: 3.2, repeat: -1, yoyo: true, ease: 'sine.inOut'
+              });
+            }
+          }
+        );
+      }
+
+      // Works helmet avatar — rise from bottom right with spring pop & idle float
+      const worksHelmetWrap = document.querySelector('#works-helmet-avatar-wrap');
+      if (worksHelmetWrap) {
+        gsap.fromTo(worksHelmetWrap,
+          { autoAlpha: 0, y: 120, scale: 0.85 },
+          {
+            autoAlpha: 1, y: 0, scale: 1,
+            duration: 1.3, ease: 'back.out(1.4)',
+            scrollTrigger: { trigger: '#works', start: 'center 85%', once: true },
+            onComplete: () => {
+              gsap.to('#works-helmet-avatar', {
+                y: -12, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+              });
+            }
+          }
+        );
+      }
+
+      // About section suit avatar — slide from right + bounce & idle float
+      const aboutSuitAvatar = document.querySelector('#about-suit-avatar');
+      if (aboutSuitAvatar) {
+        gsap.fromTo(aboutSuitAvatar,
+          { autoAlpha: 0, y: 50, scale: 0.6, transformOrigin: 'bottom center' },
+          {
+            autoAlpha: 1, y: 0, scale: 1,
+            duration: 1.1, ease: 'back.out(2.0)',
+            scrollTrigger: { trigger: '#about', start: 'top 80%', once: true },
+            onComplete: () => {
+              gsap.to(aboutSuitAvatar, {
+                y: -8, duration: 2.6, repeat: -1, yoyo: true, ease: 'sine.inOut'
+              });
+            }
+          }
+        );
+      }
+
+      // Experience milestone avatar — slide from right & float
+      const milestoneWrap = document.querySelector('#experience-milestone-avatar-wrap');
+      if (milestoneWrap) {
+        gsap.fromTo(milestoneWrap,
+          { autoAlpha: 0, x: 90, scale: 0.85 },
+          {
+            autoAlpha: 1, x: 0, scale: 1,
+            duration: 1.25, ease: 'power3.out',
+            scrollTrigger: { trigger: '#experience', start: 'top 80%', once: true },
+            onComplete: () => {
+              gsap.to('#experience-milestone-avatar', {
+                y: -10, duration: 3.0, repeat: -1, yoyo: true, ease: 'sine.inOut'
+              });
+            }
+          }
+        );
+      }
+
+      // Contact 3D avatar — scale & tilt pop in
+      const contactAvatarImg = document.querySelector('#contact-avatar-img');
+      if (contactAvatarImg) {
+        gsap.fromTo(contactAvatarImg,
+          { autoAlpha: 0, scale: 0.8, y: 40 },
+          {
+            autoAlpha: 1, scale: 1, y: 0,
+            duration: 1.1, ease: 'back.out(1.4)',
+            scrollTrigger: { trigger: '#contact', start: 'top 82%', once: true },
+            onComplete: () => {
+              gsap.to(contactAvatarImg, {
+                y: -7, duration: 3.0, repeat: -1, yoyo: true, ease: 'sine.inOut'
+              });
+            }
+          }
+        );
+      }
+
+      // ── 8. ABOUT CARD STATS — count up numbers ────────────────────
+      const statNums = document.querySelectorAll('.stat-num, .kpi-number, [class*="stat-value"]');
+      statNums.forEach(el => {
+        const target = parseFloat(el.textContent) || 0;
+        if (target === 0) return;
+        gsap.fromTo(el,
+          { textContent: 0 },
+          {
+            textContent: target,
+            duration: 1.8, ease: 'power2.out',
+            snap: { textContent: 0.1 },
+            scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+            onUpdate() { el.textContent = parseFloat(el.textContent).toFixed(target % 1 !== 0 ? 2 : 0); }
+          }
+        );
+      });
+
+      // ── 9. MARQUEE STRIP — speed up on scroll ─────────────────────
+      const marqueeTrack = document.querySelector('.marquee-track');
+      if (marqueeTrack) {
+        ScrollTrigger.create({
+          trigger: '.marquee-strip',
+          start: 'top 85%',
+          end: 'bottom top',
+          onEnter: () => marqueeTrack.style.animationDuration = '18s',
+          onLeave: () => marqueeTrack.style.animationDuration = '38s',
+          onEnterBack: () => marqueeTrack.style.animationDuration = '18s',
+          onLeaveBack: () => marqueeTrack.style.animationDuration = '38s'
+        });
+      }
+
+      // ── 10. SCROLL PROGRESS INDICATOR ────────────────────────────
+      const progressBar = document.createElement('div');
+      progressBar.id = 'scroll-progress-bar';
+      progressBar.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 0%; height: 3px;
+        background: linear-gradient(90deg, var(--pink-500), var(--maroon-600));
+        z-index: 9999; border-radius: 0 2px 2px 0;
+        box-shadow: 0 0 8px rgba(128,0,0,0.5);
+        transition: width 0.1s linear;
+        pointer-events: none;
+      `;
+      document.body.appendChild(progressBar);
+
+      ScrollTrigger.create({
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        onUpdate: (self) => {
+          progressBar.style.width = (self.progress * 100) + '%';
+        }
+      });
     }
   }
 
+  /* ==========================================================================
+     HERO BACKGROUND TYPOGRAPHY AMBIENT MOTION & CURSOR WAVE
+     ========================================================================== */
+  function initHeroTypographyFloating(chars) {
+    if (!chars || chars.length === 0) return;
 
+    // 1. Organic Sinusoidal Wave (Continuous subtle floating ribbons)
+    chars.forEach((char, index) => {
+      gsap.to(char, {
+        y: index % 2 === 0 ? -4 : 4,
+        rotateZ: index % 2 === 0 ? 0.7 : -0.7,
+        duration: 3.2 + (index * 0.12),
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+        delay: index * 0.06
+      });
+    });
+
+    // 2. Interactive Cursor Magnetic Wave across individual characters
+    const heroSection = document.getElementById('hero');
+    if (heroSection && !isTouch) {
+      heroSection.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        chars.forEach((char) => {
+          const rect = char.getBoundingClientRect();
+          const charCenterX = rect.left + rect.width / 2;
+          const charCenterY = rect.top + rect.height / 2;
+          const dist = Math.hypot(mouseX - charCenterX, mouseY - charCenterY);
+          const maxDist = 260;
+
+          if (dist < maxDist) {
+            const force = 1 - dist / maxDist;
+            const pullY = -12 * force;
+            const tiltX = ((mouseY - charCenterY) / maxDist) * 10;
+            const tiltY = ((mouseX - charCenterX) / maxDist) * -10;
+
+            gsap.to(char, {
+              y: pullY,
+              rotateX: tiltX,
+              rotateY: tiltY,
+              scale: 1 + (0.07 * force),
+              duration: 0.3,
+              ease: 'power2.out',
+              overwrite: 'auto'
+            });
+          } else {
+            gsap.to(char, {
+              y: 0,
+              rotateX: 0,
+              rotateY: 0,
+              scale: 1,
+              duration: 0.6,
+              ease: 'power2.out',
+              overwrite: 'auto'
+            });
+          }
+        });
+      });
+
+      heroSection.addEventListener('mouseleave', () => {
+        chars.forEach((char) => {
+          gsap.to(char, {
+            y: 0,
+            rotateX: 0,
+            rotateY: 0,
+            scale: 1,
+            duration: 0.65,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
+      });
+    }
+  }
 
   /* ==========================================================================
      DYMAS ALFIN 3D MOUSE PARALLAX (Silky GSAP Floating Response)
@@ -538,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ivf: {
       title: 'IVF Healthcare Counseling & Patient Intake',
       tagline: 'Empathetic Healthcare Counseling & Confidential Records Operations',
-      img: 'assets/proj_aurabiotrack.jpg',
+      img: 'assets/clinical_healthcare.jpg',
       specs: [
         { label: 'Clinic', val: 'IVF Access, Rajajinagar, Bengaluru' },
         { label: 'Tenure', val: '2026 — Present' },
@@ -1064,7 +1541,49 @@ document.addEventListener('DOMContentLoaded', () => {
   if (downloadPdfBtn) {
     downloadPdfBtn.addEventListener('click', () => {
       playHarmonicTone(5, 0.12);
-      showToast('✅ Raksha_Shetty_Resume.pdf downloaded successfully!');
+      showToast('📄 Downloading Raksha Shetty Resume PDF...');
+    });
+  }
+
+  // Cover Letter Modal Handlers
+  const coverLetterModal = document.getElementById('cover-letter-modal');
+  const openCoverLetterBtn = document.getElementById('open-cover-letter-btn');
+  const coverLetterCloseBtn = document.getElementById('cover-letter-close-btn');
+  const downloadCoverLetterBtn = document.getElementById('download-cover-letter-pdf-btn') || document.getElementById('download-cover-letter-btn');
+
+  if (openCoverLetterBtn) {
+    openCoverLetterBtn.addEventListener('click', () => {
+      if (coverLetterModal) {
+        coverLetterModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        playHarmonicTone(4, 0.1);
+      }
+    });
+  }
+
+  if (coverLetterCloseBtn) {
+    coverLetterCloseBtn.addEventListener('click', () => {
+      if (coverLetterModal) {
+        coverLetterModal.classList.remove('active');
+        document.body.style.overflow = '';
+        playHarmonicTone(1, 0.08);
+      }
+    });
+  }
+
+  if (coverLetterModal) {
+    coverLetterModal.addEventListener('click', (e) => {
+      if (e.target === coverLetterModal) {
+        coverLetterModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  if (downloadCoverLetterBtn) {
+    downloadCoverLetterBtn.addEventListener('click', () => {
+      playHarmonicTone(5, 0.12);
+      showToast('📄 Downloading Raksha Shetty Cover Letter PDF...');
     });
   }
 
@@ -1219,7 +1738,7 @@ document.addEventListener('DOMContentLoaded', () => {
             • 🚁 <strong>VLOS Drone Operations</strong> | Hands-on Pilot Training &amp; Flight Safety
           `;
         } else if (cmd === 'hire' || cmd === 'contact') {
-          responseLine.innerHTML = `Direct contact: <span style="color:#FDE047;">rakshashetty@gmail.com</span> | Rajajinagar, Bangalore-10<br>LinkedIn: <a href="https://www.linkedin.com/in/raksha-shetty-591157250/" target="_blank" rel="noopener noreferrer" style="color:#60A5FA; text-decoration:underline;">linkedin.com/in/raksha-shetty-591157250</a>`;
+          responseLine.innerHTML = `Direct contact: <span style="color:#FDE047;">rakshashetty983@gmail.com</span> | Rajajinagar, Bangalore-10<br>LinkedIn: <a href="https://www.linkedin.com/in/raksha-shetty-591157250/" target="_blank" rel="noopener noreferrer" style="color:#60A5FA; text-decoration:underline;">linkedin.com/in/raksha-shetty-591157250</a>`;
           showToast('🎉 Let’s connect and collaborate!');
         } else if (cmd === 'whoami') {
           responseLine.innerHTML = `Raksha — Medical Counselor &amp; Healthcare Administrator | BCA Graduate (CGPA: 8.65)`;
@@ -1251,43 +1770,37 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     ATMOSPHERE / THEME SWITCHER
+     LIGHT / DARK THEME TOGGLE SWITCH
      ========================================================================== */
   const themeBtn = document.getElementById('theme-toggle-btn');
-  const themes = ['default', 'dark', 'wine', 'garnet'];
-  let currentThemeIdx = 0;
 
   // Restore persisted theme from localStorage
   const savedTheme = localStorage.getItem('rs_portfolio_theme');
-  if (savedTheme && themes.includes(savedTheme)) {
-    currentThemeIdx = themes.indexOf(savedTheme);
-    applyTheme(savedTheme, false);
+  if (savedTheme === 'dark') {
+    applyTheme('dark', false);
+  } else {
+    applyTheme('default', false);
   }
 
-  function applyTheme(theme, showToastMsg = true) {
-    if (theme === 'default') {
-      document.documentElement.removeAttribute('data-theme');
-      if (showToastMsg) showToast('🍷 Atmosphere: Royal Maroon & Alabaster');
-    } else if (theme === 'dark') {
+  function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    if (isDark) {
       document.documentElement.setAttribute('data-theme', 'dark');
-      if (showToastMsg) showToast('🌙 Atmosphere: Velvet Obsidian & Deep Maroon');
-    } else if (theme === 'wine') {
-      document.documentElement.setAttribute('data-theme', 'wine');
-      if (showToastMsg) showToast('🍇 Atmosphere: Imperial Wine & Velvet Glow');
-    } else if (theme === 'garnet') {
-      document.documentElement.setAttribute('data-theme', 'garnet');
-      if (showToastMsg) showToast('💎 Atmosphere: Radiant Garnet & Pure Gold');
+      if (themeBtn) themeBtn.setAttribute('aria-checked', 'true');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (themeBtn) themeBtn.setAttribute('aria-checked', 'false');
     }
-    localStorage.setItem('rs_portfolio_theme', theme);
+    localStorage.setItem('rs_portfolio_theme', isDark ? 'dark' : 'default');
   }
 
-  function cycleTheme() {
-    currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-    applyTheme(themes[currentThemeIdx], true);
+  function toggleTheme() {
+    const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    applyTheme(isCurrentlyDark ? 'default' : 'dark');
     playHarmonicTone(4, 0.1);
   }
 
-  if (themeBtn) themeBtn.addEventListener('click', cycleTheme);
+  if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
   /* ==========================================================================
      COPY CODE & COPY EMAIL ACTIONS
@@ -1306,9 +1819,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyEmailBtn = document.getElementById('copy-email-btn');
   if (copyEmailBtn) {
     copyEmailBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText('rakshashetty@gmail.com').then(() => {
+      navigator.clipboard.writeText('rakshashetty983@gmail.com').then(() => {
         playHarmonicTone(5, 0.1);
-        showToast('📬 Email copied: rakshashetty@gmail.com');
+        showToast('📬 Email copied: rakshashetty983@gmail.com');
       });
     });
   }
@@ -1456,16 +1969,77 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearEl = document.getElementById('current-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  /* ==========================================================================
+     SAY HELLO MODAL LOGIC
+     ========================================================================== */
+  const sayHelloBtn = document.getElementById('say-hello-trigger');
+  const helloModal = document.getElementById('hello-modal-overlay');
+  const helloModalClose = document.getElementById('hello-modal-close');
+  const helloPills = document.querySelectorAll('.hello-modal-pill');
+  const helloNote = document.getElementById('hello-modal-note');
+  const helloSubmit = document.getElementById('hello-modal-submit');
+  const helloCopy = document.getElementById('hello-modal-copy');
+  
+  let currentSubject = 'Work together';
+
+  const updateMailto = () => {
+    if (!helloSubmit) return;
+    const bodyText = helloNote ? encodeURIComponent(helloNote.value) : '';
+    const subjectText = encodeURIComponent(currentSubject);
+    helloSubmit.href = `mailto:rakshashetty983@gmail.com?subject=${subjectText}&body=${bodyText}`;
+  };
+
+  if (sayHelloBtn && helloModal) {
+    sayHelloBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      helloModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (typeof playHarmonicTone === 'function') playHarmonicTone(4, 0.1);
+    });
+  }
+
+  if (helloModalClose && helloModal) {
+    helloModalClose.addEventListener('click', () => {
+      helloModal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  }
+
+  helloPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      helloPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      currentSubject = pill.getAttribute('data-subject') || 'Hello';
+      updateMailto();
+    });
+  });
+
+  if (helloNote) {
+    helloNote.addEventListener('input', updateMailto);
+  }
+
+  if (helloCopy) {
+    helloCopy.addEventListener('click', () => {
+      navigator.clipboard.writeText('rakshashetty983@gmail.com').then(() => {
+        if (typeof playHarmonicTone === 'function') playHarmonicTone(5, 0.1);
+        if (typeof showToast === 'function') showToast('📬 Email copied: rakshashetty983@gmail.com');
+      });
+    });
+  }
+
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      closeProjectModal();
-      closeCommandPalette();
-      if (resumeModal) {
+      if (typeof closeProjectModal === 'function') closeProjectModal();
+      if (typeof closeCommandPalette === 'function') closeCommandPalette();
+      if (typeof resumeModal !== 'undefined' && resumeModal) {
         resumeModal.classList.remove('active');
-        document.body.style.overflow = '';
       }
-      if (navLinksMenu) {
+      if (typeof navLinksMenu !== 'undefined' && navLinksMenu) {
         navLinksMenu.classList.remove('mobile-open');
+      }
+      if (helloModal && helloModal.classList.contains('active')) {
+        helloModal.classList.remove('active');
+        document.body.style.overflow = '';
       }
     }
   });
