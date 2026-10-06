@@ -6,7 +6,15 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Python cache & logs
+# Python cache, virtual environments & logs
 __pycache__/
 *.pyc
 *.log
+venv/
+.venv/
+env/
+ENV/
+
+# Node dependencies (if any)
+node_modules/
+
